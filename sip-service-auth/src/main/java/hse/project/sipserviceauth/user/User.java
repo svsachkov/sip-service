@@ -21,13 +21,13 @@ import java.util.List;
 public class User implements UserDetails {
 
   @Id
-  @GeneratedValue
-  private Integer id;
-  private String firstname;
-  private String lastname;
-  private String username;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private Integer user_id;
+  private String user_name;
+  private String name;
+  private String surname;
+  private String patronymic;
   private String password;
-
   @Enumerated(EnumType.STRING)
   private Role role;
 
@@ -43,7 +43,7 @@ public class User implements UserDetails {
 
   @Override
   public String getUsername() {
-    return username;
+    return user_name;
   }
 
   @Override
