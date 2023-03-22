@@ -1,4 +1,4 @@
-package hse.project.sipserviceauth.models;
+package hse.project.sipserviceauth.models.domains;
 
 import hse.project.sipserviceauth.Role;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
 package hse.project.sipserviceauth.token;
 
-import hse.project.sipserviceauth.models.User;
+import hse.project.sipserviceauth.models.domains.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -5,7 +5,7 @@ import hse.project.sipserviceauth.token.Token;
 import hse.project.sipserviceauth.token.TokenRepository;
 import hse.project.sipserviceauth.token.TokenType;
 import hse.project.sipserviceauth.Role;
-import hse.project.sipserviceauth.models.User;
+import hse.project.sipserviceauth.models.domains.User;
 import hse.project.sipserviceauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
