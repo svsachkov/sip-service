@@ -4,16 +4,14 @@ import hse.project.sipserviceauth.config.JwtService;
 import hse.project.sipserviceauth.token.Token;
 import hse.project.sipserviceauth.token.TokenRepository;
 import hse.project.sipserviceauth.token.TokenType;
-import hse.project.sipserviceauth.user.Role;
-import hse.project.sipserviceauth.user.User;
-import hse.project.sipserviceauth.user.UserRepository;
+import hse.project.sipserviceauth.Role;
+import hse.project.sipserviceauth.models.User;
+import hse.project.sipserviceauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor

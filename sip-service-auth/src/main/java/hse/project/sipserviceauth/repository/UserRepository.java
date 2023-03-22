@@ -1,5 +1,6 @@
-package hse.project.sipserviceauth.user;
+package hse.project.sipserviceauth.repository;
 
+import hse.project.sipserviceauth.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

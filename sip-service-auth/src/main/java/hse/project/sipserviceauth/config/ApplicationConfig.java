@@ -1,6 +1,6 @@
 package hse.project.sipserviceauth.config;
 
-import hse.project.sipserviceauth.user.UserRepository;
+import hse.project.sipserviceauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

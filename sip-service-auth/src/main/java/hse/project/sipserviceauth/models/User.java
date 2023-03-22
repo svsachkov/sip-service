@@ -1,5 +1,6 @@
-package hse.project.sipserviceauth.user;
+package hse.project.sipserviceauth.models;
 
+import hse.project.sipserviceauth.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

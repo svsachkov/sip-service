@@ -52,11 +52,20 @@ public class SecurityConfiguration {
 //        ;
 
         http
-                .cors().and()
-                .csrf().disable()
+                .cors()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                .requestMatchers("/**")
+//                .requestMatchers("/auth/hello")
+//                .authenticated()
+                .requestMatchers("/auth/**")
+                .permitAll()
+                .and()
+                .formLogin()
+                .loginPage("/login.html")
                 .permitAll();
+                //.and().formLogin();
 
         return http.build();
     }

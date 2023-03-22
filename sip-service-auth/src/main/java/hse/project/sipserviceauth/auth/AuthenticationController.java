@@ -1,11 +1,8 @@
 package hse.project.sipserviceauth.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,5 +31,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.login(request));
     }
 
+    @GetMapping("/user")
+    public String user(@RequestHeader (name="Authorization") String token) {
+        return token;
+    }
 
+//    @GetMapping("/user")
+//    public ResponseEntity<UserResponse> user(HttpServletRequest request) {
+//        User user = (User) request.getAttribute("user");
+//
+//        return ResponseEntity.ok(UserResponse.builder().a(user.getName()).build());
+//    }
 }
