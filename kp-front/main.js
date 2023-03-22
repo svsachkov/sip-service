@@ -4,6 +4,10 @@ import VectorSource from './node_modules/ol/source/Vector.js';
 import VectorLayer from './node_modules/ol/layer/Vector.js';
 import ImageLayer from './node_modules/ol/layer/Image.js';
 import ImageStatic from './node_modules/ol/source/ImageStatic.js';
+
+import WKT from './node_modules/ol/format/WKT.js';
+import ImageWMS from './node_modules/ol/source/ImageWMS.js';
+// import GeoTIFFSource from './node_modules/ol/source/GeoTIFF.js';
 import {toSize} from './node_modules/ol/size.js';
 import DragAndDrop from './node_modules/ol/interaction/DragAndDrop.js';
 import Map from './node_modules/ol/Map.js';
@@ -34,6 +38,9 @@ import {
     Style,
     Text,
 } from './node_modules/ol/style.js';
+import UnaryUnionOp from "./node_modules/jsts/org/locationtech/jts/operation/union/UnaryUnionOp.js";
+import Geometry from "./node_modules/jsts/org/locationtech/jts/geom/Geometry.js";
+import GeometryFactory from "./node_modules/jsts/org/locationtech/jts/geom/GeometryFactory.js";
 // import Bounds, Size
 
 const key = '4Z4vZj5CICocrdP4mCFb';
@@ -137,6 +144,7 @@ function setInteraction() {
         map.addLayer(
             new VectorLayer({
                 source: vectorSource,
+                zIndex: 1
             })
         );
         map.getView().fit(vectorSource.getExtent());
@@ -179,13 +187,30 @@ const styleSelector = document.getElementById('style');
 const styles = {layer_schema, layer_sat};
 
 // TODO
-var img_ext = olProj.transformExtent([3238005, 5039853, 3244050, 5045897],
-    'EPSG:3857', 'EPSG:3857') // EPSG:4326
+var img_ext = olProj.transformExtent([2938005, 4839853, 3284050, 5025897],
+    'EPSG:3857', 'EPSG:3857') // EPSG:4326 3857
+console.log(img_ext)
 var imageLayer = new ImageLayer({
     source: new ImageStatic({
-        url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
+        // url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
+        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=NATURAL-COLOR&BBOX=3238005,5039853,3244050,5045897&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2019-03-29/2019-05-29',
+        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=FALSE-COLOR&BBOX=3238005,5039853,3244050,5045897&MAXCC=50&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2021-03-29/2021-05-29',
+        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=NDVI&BBOX=3238005,5039853,3244050,5045897&MAXCC=80&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2022-12-29/2023-01-15&PRIORITY=mostRecent&QUALITY=100',
+        // url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=20&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&BBOX=3238005,5039853,3244050,5045897&FORMAT=image/jpeg',
+        // url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&BBOX=2938005,4839853,3284050,5025897&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
+        url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&BBOX=2938005,4839853,3284050,5025897&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
         imageExtent: img_ext // east, north, west, south
-    })
+    }),
+    // source: new ImageWMS({ // image/tiff
+    //     // url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
+    //     url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/tiff&TIME=2018-03-29/2018-05-29',
+    //     // url: 'https://ahocevar.com/geoserver/wms',
+    //     // params: {'LAYERS': 'topp:states'},
+    //     serverType: 'geoserver',
+    //     extent: [3238005,5039853,3244050,5045897], // east, north, west, south
+    //     ratio: 1,
+    // }),
+    zIndex: 0
 });
 map.addLayer(imageLayer);
 
@@ -231,7 +256,92 @@ document.getElementById("exportBtn").addEventListener('click', function () {
     }
 
     // json = JSON.stringify(json, null, 4);
-    download(json, 'export.json', 'application/json');
+    download(json, 'feature_export.json', 'application/json');
+});
+document.getElementById("exportBtnL").addEventListener('click', function () {
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] === 1) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+    var f_lst = []
+    var feat = []
+    for (let i = 0; i < lst.length; i++) {
+        f_lst.push(lst[i].getSource().getFeatures());
+    }
+    for (let i = 0; i < f_lst.length; i++) {
+        for (let j = 0; j < f_lst[i].length; j++) {
+            feat.push(f_lst[i][j]);
+        }
+    }
+    console.log(feat);
+    var json = new GeoJSON().writeFeatures(feat, {
+        dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'
+    });
+
+    // console.log(json);
+
+    function download_l(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+        a.remove();
+    }
+
+    download_l(json, 'layer_export.json', 'application/json');
+});
+document.getElementById("clearBtnL").addEventListener('click', function () {
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 1) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+
+    map.setLayers([styles[styleSelector.value]]);
+    for (let i = 1; i < lst.length; i++) {
+        map.addLayer(lst[i]);
+    }
+    // console.log(lst);
+});
+document.getElementById("imgSearchBtn").addEventListener('click', function () {
+    var features = source.getFeatures();
+    var wktRepresenation;
+    var Bound;
+    // console.log(features);
+    if (features.length === 0) {
+        console.log('no shapes');
+    } else {
+        var format = new WKT();
+        if (features.length === 1) {
+            wktRepresenation = format.writeGeometry(features[0].getGeometry());
+            Bound = features[0].getGeometry().getExtent();
+        } else {
+            // TODO: сделать не только для двух полигонов
+            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+            wktRepresenation = format.writeGeometry(olGeom._geomFact);
+            Bound = olGeom._geomFact.getExtent();
+        }
+        console.log(Bound);
+        console.log(wktRepresenation);
+    }
+
+    // TODO
+    const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce'
+    const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    var img_ext = olProj.transformExtent(Bound,
+        'EPSG:3857', 'EPSG:3857') // EPSG:4326 3857
+    var imageLayer = new ImageLayer({
+        source: new ImageStatic({
+            url: my_str,
+            imageExtent: img_ext // east, north, west, south
+        }),
+        zIndex: 0
+    });
+    map.addLayer(imageLayer);
 });
 
 const modifyStyle = new Style({
