@@ -304,7 +304,8 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 
     // TODO
     const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce'
-    const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    console.log(my_str)
     var img_ext = olProj.transformExtent(Bound,
         'EPSG:3857', 'EPSG:3857') // EPSG:4326 3857
     var imageLayer = new ImageLayer({
