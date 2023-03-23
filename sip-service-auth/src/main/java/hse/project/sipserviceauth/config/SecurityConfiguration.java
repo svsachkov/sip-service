@@ -60,11 +60,13 @@ public class SecurityConfiguration {
 //                .requestMatchers("/auth/hello")
 //                .authenticated()
                 .requestMatchers("/auth/**")
-                .permitAll()
-                .and()
-                .formLogin()
-                .loginPage("/login.html")
                 .permitAll();
+//                .anyRequest()
+//                .authenticated();
+//                .and()
+//                .formLogin()
+//                .loginPage("/login.html")
+//                .permitAll();
                 //.and().formLogin();
 
         return http.build();

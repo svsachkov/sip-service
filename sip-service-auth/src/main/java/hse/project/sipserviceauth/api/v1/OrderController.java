@@ -13,12 +13,17 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class OrderController {
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) throws IOException {
-        return ResponseEntity.ok(orderService.create(orderRequest));
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder(request));
     }
+
+//    @PostMapping
+//    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) throws IOException {
+//        return ResponseEntity.ok(orderService.create(orderRequest));
+//    }
 }
