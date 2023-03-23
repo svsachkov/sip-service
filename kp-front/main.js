@@ -318,6 +318,30 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     map.addLayer(imageLayer);
 });
 
+// TODO: вот тут можно метод менять
+document.getElementById("StepaBtn").addEventListener('click', function () {
+    const url_ = 'https://jsonplaceholder.typicode.com/todos/1'
+    // fetch(url_, {
+    //     method: "GET",
+    //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
+    // }).then(response => response.json()).then(console.log)
+    // если метод GET, то тела нет
+    // если метод POST, то можно тело
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": `Bearer ${tocken}`},
+        body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
+    }).then(response => response.json()).then(console.log)
+    localStorage.setItem('Stepa', Math.random())
+    // TODO
+    // fetch(url_, {
+    //     method: "GET",
+    //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
+    // }).then(response => response.json()).then(data => {
+    //
+    // })
+});
+
 const modifyStyle = new Style({
     image: new CircleStyle({
         radius: 5,
@@ -407,8 +431,6 @@ function onChangeProjection() {
 
 viewProjSelect.addEventListener('change', onChangeProjection);
 
-
 document.querySelector('#app').innerHTML = `
 <div></div>
 `
-
