@@ -23,6 +23,7 @@ import XYZ from './node_modules/ol/source/XYZ.js';
 import OSM from './node_modules/ol/source/OSM.js';
 import {Draw, Modify, Snap, Select} from './node_modules/ol/interaction.js';
 import {ScaleLine, defaults as defaultControls} from './node_modules/ol/control.js';
+import {createBox} from './node_modules/ol/interaction/Draw.js';
 import {
     getPointResolution,
     get as getProjection,
@@ -185,34 +186,6 @@ map.on('click', function (evt) {
 
 const styleSelector = document.getElementById('style');
 const styles = {layer_schema, layer_sat};
-
-// TODO
-var img_ext = olProj.transformExtent([2938005, 4839853, 3284050, 5025897],
-    'EPSG:3857', 'EPSG:3857') // EPSG:4326 3857
-console.log(img_ext)
-var imageLayer = new ImageLayer({
-    source: new ImageStatic({
-        // url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
-        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=NATURAL-COLOR&BBOX=3238005,5039853,3244050,5045897&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2019-03-29/2019-05-29',
-        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=FALSE-COLOR&BBOX=3238005,5039853,3244050,5045897&MAXCC=50&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2021-03-29/2021-05-29',
-        // url: 'https://services.sentinel-hub.com/ogc/wcs/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=NDVI&BBOX=3238005,5039853,3244050,5045897&MAXCC=80&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2022-12-29/2023-01-15&PRIORITY=mostRecent&QUALITY=100',
-        // url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=20&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&BBOX=3238005,5039853,3244050,5045897&FORMAT=image/jpeg',
-        // url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&BBOX=2938005,4839853,3284050,5025897&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
-        url: 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=FALSE-COLOR&MAXCC=1&WIDTH=1024&HEIGHT=1024&CRS=EPSG:3857&BBOX=2938005,4839853,3284050,5025897&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
-        imageExtent: img_ext // east, north, west, south
-    }),
-    // source: new ImageWMS({ // image/tiff
-    //     // url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29',
-    //     url: 'https://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?REQUEST=GetMap&BBOX=3238005,5039853,3244050,5045897&LAYERS=NATURAL-COLOR&MAXCC=20&WIDTH=320&HEIGHT=320&FORMAT=image/tiff&TIME=2018-03-29/2018-05-29',
-    //     // url: 'https://ahocevar.com/geoserver/wms',
-    //     // params: {'LAYERS': 'topp:states'},
-    //     serverType: 'geoserver',
-    //     extent: [3238005,5039853,3244050,5045897], // east, north, west, south
-    //     ratio: 1,
-    // }),
-    zIndex: 0
-});
-map.addLayer(imageLayer);
 
 function update() {
     map.setLayers([styles[styleSelector.value]]);
@@ -378,9 +351,16 @@ let draw, snap; // global so we can remove them later
 function addInteractions() {
     let value = shapeSelect.value;
     if (value !== 'None') {
+        let geometryFunction;
+        if (value === 'Box') {
+            value = 'Circle';
+            geometryFunction = createBox();
+        }
         draw = new Draw({
             source: source,
-            type: shapeSelect.value,
+            type: value,
+            // type: shapeSelect.value,
+            geometryFunction: geometryFunction,
         });
         map.addInteraction(draw);
         snap = new Snap({source: source});
