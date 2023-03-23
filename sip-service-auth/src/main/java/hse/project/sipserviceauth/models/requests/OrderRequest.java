@@ -10,11 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
-    private String coords;
-    private String bbox;
-    private String layer;
-    private String maxcc;
-    private String width;
-    private String height;
-    private String image_format;
+    private String url;
+    private String modelName;
 }

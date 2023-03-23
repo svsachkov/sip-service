@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -21,11 +22,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID user_id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "A_id", referencedColumnName = "id")
-    private A kek;
+    private String url;
+    private String modelName;
 
-    private Timestamp createdAt;
-    private Timestamp finishedAt;
-
+    private Date createdAt;
+    private Date finishedAt;
 }
