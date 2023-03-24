@@ -1,6 +1,7 @@
 package hse.project.sipserviceauth.config;
 
-import hse.project.sipserviceauth.token.TokenRepository;
+import hse.project.sipserviceauth.repository.TokenRepository;
+import hse.project.sipserviceauth.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

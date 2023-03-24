@@ -1,0 +1,183 @@
+:root {
+  --dl-color-blue-5: rgba(235, 242, 255, 1);
+  --dl-color-gray-0: rgba(247, 247, 250, 1);
+  --dl-color-gray-5: rgba(237, 237, 240, 1);
+  --dl-color-pink-5: rgba(253, 237, 242, 1);
+  --dl-color-red-60: rgba(244, 67, 54, 1);
+  --dl-color-blue-60: rgba(41, 121, 255, 1);
+  --dl-color-blue-70: rgba(34, 100, 209, 1);
+  --dl-color-gray-40: rgba(150, 150, 160, 1);
+  --dl-color-gray-50: rgba(120, 120, 133, 1);
+  --dl-color-gray-60: rgba(90, 91, 106, 1);
+  --dl-color-gray-70: rgba(74, 75, 87, 1);
+  --dl-color-green-5: rgba(235, 247, 236, 1);
+  --dl-color-pink-70: rgba(194, 53, 100, 1);
+  --dl-color-blue-100: rgba(12, 33, 70, 1);
+  --dl-color-gray-100: rgba(25, 25, 29, 1);
+  --dl-color-gray-500: #595959;
+  --dl-color-gray-700: #999999;
+  --dl-color-gray-900: #D9D9D9;
+  --dl-color-green-70: rgba(55, 131, 59, 1);
+  --dl-size-size-large: 144px;
+  --dl-size-size-small: 48px;
+  --dl-color-danger-300: #A22020;
+  --dl-color-danger-500: #BF2626;
+  --dl-color-danger-700: #E14747;
+  --dl-color-gray-black: #000000;
+  --dl-color-gray-white: #FFFFFF;
+  --dl-size-size-medium: 96px;
+  --dl-size-size-xlarge: 192px;
+  --dl-size-size-xsmall: 16px;
+  --dl-space-space-unit: 16px;
+  --dl-color-primary-100: #003EB3;
+  --dl-color-primary-300: #0074F0;
+  --dl-color-primary-500: #14A9FF;
+  --dl-color-primary-700: #85DCFF;
+  --dl-color-success-300: #199033;
+  --dl-color-success-500: #32A94C;
+  --dl-color-success-700: #4CC366;
+  --dl-size-size-xxlarge: 288px;
+  --dl-size-size-maxwidth: 1400px;
+  --dl-color-default-icons: rgba(120, 120, 133, 1);
+  --dl-radius-radius-round: 50%;
+  --dl-space-space-halfunit: 8px;
+  --dl-space-space-sixunits: 96px;
+  --dl-space-space-twounits: 32px;
+  --dl-radius-radius-radius2: 2px;
+  --dl-radius-radius-radius4: 4px;
+  --dl-radius-radius-radius8: 8px;
+  --dl-space-space-fiveunits: 80px;
+  --dl-space-space-fourunits: 64px;
+  --dl-color-default-white100: rgba(255, 255, 255, 1);
+  --dl-space-space-threeunits: 48px;
+  --dl-color-gradients-blueindigo: rgba(41, 121, 255, 1);
+  --dl-space-space-oneandhalfunits: 24px;
+}
+.button {
+  color: var(--dl-color-gray-black);
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-color: var(--dl-color-gray-black);
+  border-width: 1px;
+  border-radius: 4px;
+  background-color: var(--dl-color-gray-white);
+}
+.input {
+  color: var(--dl-color-gray-black);
+  cursor: auto;
+  padding: 0.5rem 1rem;
+  border-color: var(--dl-color-gray-black);
+  border-width: 1px;
+  border-radius: 4px;
+  background-color: var(--dl-color-gray-white);
+}
+.textarea {
+  color: var(--dl-color-gray-black);
+  cursor: auto;
+  padding: 0.5rem;
+  border-color: var(--dl-color-gray-black);
+  border-width: 1px;
+  border-radius: 4px;
+  background-color: var(--dl-color-gray-white);
+}
+.list {
+  width: 100%;
+  margin: 1em 0px 1em 0px;
+  display: block;
+  padding: 0px 0px 0px 1.5rem;
+  list-style-type: none;
+  list-style-position: outside;
+}
+.list-item {
+  display: list-item;
+}
+.teleport-show {
+  display: flex !important;
+  transform: none !important;
+}
+.Content {
+  font-size: 16px;
+  font-family: Inter;
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: none;
+  text-decoration: none;
+}
+.Heading {
+  font-size: 32px;
+  font-family: Inter;
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: none;
+  text-decoration: none;
+}
+.InterBodyDefault\(Medium\) {
+  font-size: 16px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 500px;
+  font-stretch: normal;
+}
+.InterBodySmall {
+  font-size: 14px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 400px;
+  font-stretch: normal;
+}
+.Inter20sp•H6 {
+  font-size: 20px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 700px;
+  font-stretch: normal;
+}
+.InterBodyDefault {
+  font-size: 16px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 400px;
+  font-stretch: normal;
+}
+.Quicksand24sp•H5 {
+  font-size: 24px;
+  font-style: normal;
+  font-family: Quicksand;
+  font-weight: 700px;
+  font-stretch: normal;
+}
+.Quicksand20sp•H6 {
+  font-size: 20px;
+  font-style: normal;
+  font-family: Quicksand;
+  font-weight: 700px;
+  font-stretch: normal;
+}
+.InterBodySmall\(Medium\) {
+  font-size: 14px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 500px;
+  font-stretch: normal;
+}
+.Inter24sp•H5 {
+  font-size: 24px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 700px;
+  font-stretch: normal;
+}
+.InterBodyLarge {
+  font-size: 20px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 400px;
+  font-stretch: normal;
+}
+.InterBodyLarge\(Medium\) {
+  font-size: 20px;
+  font-style: normal;
+  font-family: Inter;
+  font-weight: 500px;
+  font-stretch: normal;
+}

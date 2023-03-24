@@ -355,6 +355,7 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
     my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
+    localStorage.setItem('url', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
         source: new ImageStatic({
@@ -366,25 +367,95 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     map.addLayer(imageLayer);
 });
 
+document.getElementById("regSubmit").addEventListener('click', function () {
+    console.log("reg")
+    const username = document.getElementById("regLogin").value.toString();
+    const password = document.getElementById("regPwd").value.toString();
+    const confirmed = document.getElementById("pereatPwd").value.toString();
+    const surname = document.getElementById("surname").value.toString();
+    const name = document.getElementById("name").value.toString();
+    const patronymic = document.getElementById("patronymic").value.toString();
+
+    const url_ = 'http://localhost:8000/register'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
+        body: JSON.stringify({
+            "username": username,
+            "password": password,
+            "name": name,
+            "surname": surname,
+            "patronymic": patronymic
+        })
+    }).then(response => response.json()).then(console.log)
+});
+
+document.getElementById("logSubmit").addEventListener('click', function () {
+    const username = document.getElementById("logLogin").value.toString();
+    const password = document.getElementById("logPwd").value.toString();
+
+    const url_ = 'http://localhost:8000/login'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
+        body: JSON.stringify({
+            "username": username,
+            "password": password
+        })
+    }).then(response => response.json()).then(
+        function (response) {
+            localStorage.setItem('JWT', "Bearer " + response["token"])
+            console.log(response)
+        }
+    )
+});
+
+const interval = setInterval(function() {
+    const url_ = 'http://localhost:8000/v1/order'
+    const token = localStorage.getItem("JWT")
+
+    fetch(url_, {
+        method: "GET",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+    }).then(response => response.json()).then(console.log)
+}, 5000);
+
 // TODO: вот тут можно метод менять
 document.getElementById("StepaBtn").addEventListener('click', function () {
-    const url_ = 'https://jsonplaceholder.typicode.com/todos/1'
+    const url = localStorage.getItem("url")
+    const token = localStorage.getItem("JWT")
+
+    const url_ = 'http://localhost:8000/v1/order'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
+        body: JSON.stringify({
+            "url": url,
+            "model_name": "model"
+        })
+    }).then(response => response.json()).then(
+        function (response) {
+            console.log(response)
+        }
+    )
+
+    // const url_ = 'https://jsonplaceholder.typicode.com/todos/1'
     // fetch(url_, {
     //     method: "GET",
     //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
     // }).then(response => response.json()).then(console.log)
     // если метод GET, то тела нет
     // если метод POST, то можно тело
-    fetch(url_, {
-        method: "POST",
-        headers: {
-            "Accept": 'application/json',
-            "Content-type": 'application/json',
-            "Authorization": `Bearer ${tocken}`
-        },
-        body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
-    }).then(response => response.json()).then(console.log)
-    localStorage.setItem('Stepa', Math.random())
+    // fetch(url_, {
+    //     method: "POST",
+    //     headers: {
+    //         "Accept": 'application/json',
+    //         "Content-type": 'application/json',
+    //         "Authorization": `Bearer ${tocken}`
+    //     },
+    //     body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
+    // }).then(response => response.json()).then(console.log)
+    // localStorage.setItem('Stepa', Math.random())
     // TODO
     // fetch(url_, {
     //     method: "GET",
