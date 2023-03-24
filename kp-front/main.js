@@ -42,6 +42,7 @@ import {
 import UnaryUnionOp from "./node_modules/jsts/org/locationtech/jts/operation/union/UnaryUnionOp.js";
 import Geometry from "./node_modules/jsts/org/locationtech/jts/geom/Geometry.js";
 import GeometryFactory from "./node_modules/jsts/org/locationtech/jts/geom/GeometryFactory.js";
+import Feature from "./node_modules/ol/Feature.js";
 // import Bounds, Size
 
 const key = '4Z4vZj5CICocrdP4mCFb';
@@ -78,26 +79,38 @@ const layer_sat = new TileLayer({
         // attributions: attributions,
         url:
             'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
-        maxZoom: 20,
+        maxZoom: 15,
     }),
 })
 const layer_schema = new TileLayer({
     source: new OSM({
-        attributions: ''
+        attributions: '',
+        maxZoom: 15,
     }),
 });
 
+// document.querySelector('#app').innerHTML = `
+// <div></div>
+// `
 const mousePositionControl = new MousePosition({
     coordinateFormat: createStringXY(4),
-    projection: 'EPSG:4326',
+    projection: 'EPSG:4326',//
     // comment the following two lines to have the mouse position
     // be placed within the map.
     className: 'custom-mouse-position',
     target: document.getElementById('mouse-position'),
 });
+const mousePositionControl2 = new MousePosition({
+    coordinateFormat: createStringXY(4),
+    projection: 'EPSG:3857',// projection.value
+    // comment the following two lines to have the mouse position
+    // be placed within the map.
+    className: 'custom-mouse-position2',
+    target: document.getElementById('mouse-position2'),
+});
 
 let map = new Map({
-    controls: defaultControls().extend([mousePositionControl, scaleControl]),
+    controls: defaultControls().extend([mousePositionControl, mousePositionControl2, scaleControl]),
     layers: [layer_schema, vector],
     target: 'map',
     view: new View({
@@ -106,17 +119,20 @@ let map = new Map({
     }),
 });
 
-const extent = getProjection('EPSG:3857').getExtent().slice();
+// const extent = getProjection('EPSG:3857').getExtent().slice();
+const extent = getProjection(projection.value).getExtent().slice();
 extent[0] += extent[0];
 extent[2] += extent[2];
 const projectionSelect = document.getElementById('projection');
 projectionSelect.addEventListener('change', function (event) {
     mousePositionControl.setProjection(event.target.value);
+    mousePositionControl2.setProjection(event.target.value);
 });
 const precisionInput = document.getElementById('precision');
 precisionInput.addEventListener('change', function (event) {
     const format = createStringXY(event.target.valueAsNumber);
     mousePositionControl.setCoordinateFormat(format);
+    mousePositionControl2.setCoordinateFormat(format);
 });
 
 const extractStyles = document.getElementById('extract_styles');
@@ -187,7 +203,14 @@ map.on('click', function (evt) {
 const styleSelector = document.getElementById('style');
 const styles = {layer_schema, layer_sat};
 
-function update() {
+function update() { // TODO 24.03
+    var remember = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] === 0) {
+            remember.push(map.getLayers().array_[i])
+        }
+    }
+
     map.setLayers([styles[styleSelector.value]]);
     for (let i = 0; i < lst.length; i++) {
         map.addLayer(
@@ -198,6 +221,8 @@ function update() {
         map.getView().fit(lst[i].getExtent());
     }
     map.addLayer(vector);
+    map.addLayer(remember[0]);
+
 }
 
 styleSelector.addEventListener('change', update);
@@ -214,7 +239,7 @@ document.getElementById('clear').addEventListener('click', function () {
 document.getElementById("exportBtn").addEventListener('click', function () {
     var features = source.getFeatures();
     var json = new GeoJSON().writeFeatures(features, {
-        dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'
+        dataProjection: projection.value, featureProjection: 'EPSG:3857'
         // dataProjection: map.getView().getProjection().getCode(), featureProjection: 'EPSG:3857'
     });
     console.log(json);
@@ -248,9 +273,9 @@ document.getElementById("exportBtnL").addEventListener('click', function () {
             feat.push(f_lst[i][j]);
         }
     }
-    console.log(feat);
+    // console.log(feat);
     var json = new GeoJSON().writeFeatures(feat, {
-        dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'
+        dataProjection: projection.value, featureProjection: 'EPSG:3857'
     });
 
     // console.log(json);
@@ -280,7 +305,30 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
     }
     // console.log(lst);
 });
+let my_str;
+const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
+
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+    // console.log(lst);
+    // var f_lst = []
+    // var feat = []
+    // for (let i = 0; i < lst.length; i++) {
+    //     f_lst.push(lst[i].getSource().getFeatures());
+    // }
+    // for (let i = 0; i < f_lst.length; i++) {
+    //     for (let j = 0; j < f_lst[i].length; j++) {
+    //         feat.push(f_lst[i][j]);
+    //     }
+    // }
+    map.setLayers(lst)
+
+
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
@@ -289,8 +337,9 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
         console.log('no shapes');
     } else {
         var format = new WKT();
+        var geom = [];
         if (features.length === 1) {
-            wktRepresenation = format.writeGeometry(features[0].getGeometry());
+            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
             Bound = features[0].getGeometry().getExtent();
         } else {
             // TODO: сделать не только для двух полигонов
@@ -298,16 +347,15 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
             wktRepresenation = format.writeGeometry(olGeom._geomFact);
             Bound = olGeom._geomFact.getExtent();
         }
-        console.log(Bound);
-        console.log(wktRepresenation);
+        // console.log(Bound);
+        // console.log(wktRepresenation);
     }
 
     // TODO
-    const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce'
-    const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
-    var img_ext = olProj.transformExtent(Bound,
-        'EPSG:3857', 'EPSG:3857') // EPSG:4326 3857
+    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
         source: new ImageStatic({
             url: my_str,
@@ -329,7 +377,11 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
     // если метод POST, то можно тело
     fetch(url_, {
         method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": `Bearer ${tocken}`},
+        headers: {
+            "Accept": 'application/json',
+            "Content-type": 'application/json',
+            "Authorization": `Bearer ${tocken}`
+        },
         body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
     }).then(response => response.json()).then(console.log)
     localStorage.setItem('Stepa', Math.random())
@@ -374,22 +426,27 @@ map.addInteraction(modify);
 let draw, snap; // global so we can remove them later
 
 function addInteractions() {
-    let value = shapeSelect.value;
-    if (value !== 'None') {
+    let val = shapeSelect.value;
+    if (val !== 'None') {
         let geometryFunction;
-        if (value === 'Box') {
-            value = 'Circle';
+        if (val === 'Box') {
+            val = 'Circle';
             geometryFunction = createBox();
         }
         draw = new Draw({
             source: source,
-            type: value,
+            type: val,
             // type: shapeSelect.value,
             geometryFunction: geometryFunction,
         });
+        draw.on('drawend', function (evt) {
+            //... unset sketch
+            map.removeInteraction(draw);
+        }, this);
         map.addInteraction(draw);
         snap = new Snap({source: source});
         map.addInteraction(snap);
+        source.clear();
     }
 }
 
@@ -403,7 +460,7 @@ shapeSelect.onchange = function () {
 };
 addInteractions();
 
-function onChangeProjection() {
+function onChangeProjection() { // TODO 24.03
     const currentView = map.getView();
     const currentProjection = currentView.getProjection();
     const newProjection = getProjection(viewProjSelect.value);
@@ -426,11 +483,64 @@ function onChangeProjection() {
         rotation: currentRotation,
         projection: newProjection,
     });
+
+    var remember = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] === 0) {
+            // remember.push(new Feature(map.getLayers().array_[i].getGeometry().clone().transform(currentView.getProjection(), viewProjSelect.value)))
+            remember.push(map.getLayers().array_[i])
+        }
+    }
     map.setView(newView);
+    map.setLayers([styles[styleSelector.value]]);
+    // map.addLayer(remember[0]);
+    // console.log(remember);
+    // for (let i = 0, ii = remember.length; i < ii; ++i) {
+    //     map.addLayer(remember[i]);
+    // }
+
+    var features = source.getFeatures();
+    var wktRepresenation;
+    var Bound;
+    // console.log(features);
+    if (features.length === 0) {
+        console.log('no shapes');
+    } else {
+        var format = new WKT();
+        var geom;
+        if (features.length === 1) {
+            // console.log(currentProjection.code_)
+            geom = features[0].getGeometry().clone().transform(currentProjection.code_, viewProjSelect.value)
+            wktRepresenation = format.writeGeometry(geom);
+            // wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(currentProjection.code_, viewProjSelect.value));
+            Bound = geom.getExtent();
+            console.log(geom)
+            console.log(features[0])
+        }
+        // console.log(Bound);
+        // console.log(wktRepresenation);
+    }
+
+    // TODO
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    if (remember.length > 0) {
+        my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${viewProjSelect.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+        console.log(my_str)
+        var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+        var imageLayer = new ImageLayer({
+            source: new ImageStatic({
+                url: my_str,
+                imageExtent: img_ext // east, north, west, south
+            }),
+            zIndex: 0
+        });
+        map.addLayer(imageLayer);
+        console.log(map.getLayers())
+    }
 }
 
 viewProjSelect.addEventListener('change', onChangeProjection);
 
-document.querySelector('#app').innerHTML = `
-<div></div>
-`
+// document.querySelector('#app').innerHTML = `
+// <div></div>
+// `

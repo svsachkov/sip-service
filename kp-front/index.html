@@ -14,60 +14,113 @@
 </head>
 <body>
 <h1>Home page</h1>
-<div id="app"></div>
-
-<div id="controls">
-    <div id="info"></div>
-    <div class="row">
-        <div class="col-auto">
+<!--<div id="app"></div>-->
+<div class="register_page" id="register_page">
+    <div class="regHeader" id="regHeader">Создать аккант</div>
+    <div class="regInfo" id="regInfo">Чтобы просматривать заказы, войдите в аккаунт или создайте его</div>
+    <form>
+        <input required id="regLogin" type="text" placeholder="Логин"/>
+        <input required id="regPwd" type="password" placeholder="Придумайте пароль"/>
+        <input id="pereatPwd" type="password" placeholder="Повторите пароль"/>
+        <input id="surname" type="text" placeholder="Фамилия"/>
+        <input id="name" type="text" placeholder="Имя"/>
+        <input id="patronymic" type="text" placeholder="Отчество"/>
+        <input id="regSubmit" type="submit" value="Зарегитрироваться">
+    </form>
+    <span>Уже есть аккаунт? <a id="to_login_page_from_reg">Войти</a></span>
+</div>
+<div class="login_page" id="login_page">
+    <div class="regHeader" id="logHeader">Войти в аккаунт</div>
+    <div class="regInfo" id="logInfo">Чтобы просматривать заказы, войдите в аккаунт или создайте его</div>
+    <form>
+        <input required id="logLogin" type="text" placeholder="Логин"/>
+        <input required id="logPwd" type="password" placeholder="Пароль"/>
+        <input id="logSubmit" type="submit" value="Войти">
+    </form>
+    <span>Вы здесь впервые?<a id="to_register_page_from_log">Зарегистироваться</a></span>
+</div>
+<div class="workbench_page" id="workbench_page">
+    <div id="controls">
+        <div id="info"></div>
+        <div class="row">
+            <div class="col-auto">
         <span class="input-group">
           <label class="input-group-text" for="shapeType">Geometry type:</label>
           <select class="form-select" id="shapeType">
               <option value="None">None</option>
               <option value="Polygon">Polygon</option>
               <option value="Box">Box</option>
-<!--              <option value="Point">Point</option>-->
-<!--              <option value="LineString">LineString</option>-->
-<!--              <option value="Square">Square</option>-->
-<!--              <option value="Circle">Circle</option>-->
+              <!--              <option value="Point">Point</option>-->
+              <!--              <option value="LineString">LineString</option>-->
+              <!--              <option value="Square">Square</option>-->
+              <!--              <option value="Circle">Circle</option>-->
           </select>
           <input class="form-control" type="button" value="Undo" id="undo">
           <input class="form-control" type="button" value="Abort" id="abort">
           <input class="form-control" type="button" value="Clear All" id="clear">
         </span>
-            <button class="exportBtn" type="button" id="exportBtn"><span>Get JSON Features</span></button>
+                <button class="exportBtn" type="button" id="exportBtn"><span>Get JSON Features</span></button>
+            </div>
+            <button class="exportBtn" type="button" id="clearBtnL"><span>Clear JSON Layers</span></button>
+            <button class="exportBtn" type="button" id="exportBtnL"><span>Get JSON Layers</span></button>
         </div>
-        <button class="exportBtn" type="button" id="clearBtnL"><span>Clear JSON Layers</span></button>
-        <button class="exportBtn" type="button" id="exportBtnL"><span>Get JSON Layers</span></button>
     </div>
-</div>
 
-<div id="canvas" class="canvas">
-    <div id="map" class="map"></div>
-    <div id="overlay" class="overlay">
-        <div id="mouse-position"></div>
-        <form>
-            <label for="projection">Projection </label>
-            <select id="projection">
-                <option value="EPSG:3857">EPSG:3857</option>
-                <!--TODO багованые переводы между проекциями-->
-                <!--<option value="EPSG:4326">EPSG:4326</option>-->
+    <div id="canvas" class="canvas">
+        <div id="map" class="map"></div>
+        <div id="overlay" class="overlay">
+            <div id="mouse-position"></div>
+            <div id="mouse-position2"></div>
+            <form>
+                <label for="projection">Projection </label>
+                <select id="projection">
+                    <option value="EPSG:3857">EPSG:3857</option>
+                    <!--TODO багованые переводы между проекциями-->
+<!--                    <option value="EPSG:4326">EPSG:4326</option>-->
+                </select>
+                <label for="precision">Precision</label>
+                <input id="precision" type="number" min="0" max="12" value="4"/>
+            </form>
+
+            <!--        <div id="info">&nbsp;</div>-->
+            <label for="style"></label>
+            <select id="style">
+                <option value="layer_schema">Schema</option>
+                <option value="layer_sat">Satellite</option>
             </select>
-            <label for="precision">Precision</label>
-            <input id="precision" type="number" min="0" max="12" value="4"/>
-        </form>
+        </div>
+    </div>
 
-        <!--        <div id="info">&nbsp;</div>-->
-        <label for="style"></label>
-        <select id="style">
-            <option value="layer_schema">Schema</option>
-            <option value="layer_sat">Satellite</option>
-        </select>
+    <button class="to_acc_page" type="button" id="to_acc_page"><span>Аккаунт</span></button>
+
+    <div class="orders_list" id="orders_list">
+        <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
+        <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
     </div>
 </div>
-<div>
-    <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
-    <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
+<div class="account_page" id="account_page">
+    <div class="accHeader" id="accHeader">Профиль пользователя</div>
+    <div class="accInfo" id="accInfo">Вы можете изменить данные: просто введите новые значения в нужные поля и нажмите
+        сохранить
+    </div>
+    <form>
+        <input required id="login" type="text" placeholder="Логин"/>
+        <input required id="currPwd" type="password" placeholder="Текущий пароль"/>
+        <input id="newPwd" type="password" placeholder="Новый пароль"/>
+        <input id="newSurname" type="text" placeholder="Фамилия"/>
+        <input id="newName" type="text" placeholder="Имя"/>
+        <input id="newPatronymic" type="text" placeholder="Отчество"/>
+        <input id="newSubmit" type="submit" value="Сохранить">
+    </form>
+    <a class="to_delete_acc_page" id="to_delete_acc_page">Удалить</a>
+    <button class="to_workbench_page" type="button" id="to_workbench_page"><span>Вернуться на сайт</span></button>
+    <button class="to_login_page" type="button" id="to_login_page"><span>Выйти</span></button>
+</div>
+<div class="delete_acc_page" id="delete_acc_page">
+    <div class="deleteHeader" id="deleteHeader">Удалить аккаунт</div>
+    <div class="deleteInfo" id="deleteInfo">Вы действительно хотите удалить аккаунт?</div>
+    <button class="to_register_page" type="button" id="to_register_page"><span>Удалить</span></button>
+    <button class="to_account_page" type="button" id="to_account_page"><span>Отменить</span></button>
 </div>
 <script type="module" src="/main.js"></script>
 </body>
