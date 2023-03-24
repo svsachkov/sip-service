@@ -12,12 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping()
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService service;
 
+    @CrossOrigin(origins = "http://127.0.0.1:5173")
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));

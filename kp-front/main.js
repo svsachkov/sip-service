@@ -319,27 +319,45 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 });
 
 // TODO: вот тут можно метод менять
+
+import SockJS from "sockjs-client"
+import Stomp from "@stomp/stompjs"
+
+let stompClient = null;
+
 document.getElementById("StepaBtn").addEventListener('click', function () {
-    const url_ = 'https://jsonplaceholder.typicode.com/todos/1'
+    console.log('Connected: ' + 'yoh');
+    const socket = new SockJS('/stomp-endpoint');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/greetings', function (greeting) {
+            console.log(JSON.parse(greeting.body));
+        });
+    });
+
+    stompClient.send("/app/hello", {}, JSON.stringify({'name': "Stepan"}));
+
+    // const url_ = 'https://jsonplaceholder.typicode.com/todos/1'
+    // // fetch(url_, {
+    // //     method: "GET",
+    // //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
+    // // }).then(response => response.json()).then(console.log)
+    // // если метод GET, то тела нет
+    // // если метод POST, то можно тело
     // fetch(url_, {
-    //     method: "GET",
-    //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
+    //     method: "POST",
+    //     headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": `Bearer ${tocken}`},
+    //     body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
     // }).then(response => response.json()).then(console.log)
-    // если метод GET, то тела нет
-    // если метод POST, то можно тело
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": `Bearer ${tocken}`},
-        body: JSON.stringify({"model_name": "water", "sat": "sent-2"})
-    }).then(response => response.json()).then(console.log)
-    localStorage.setItem('Stepa', Math.random())
-    // TODO
-    // fetch(url_, {
-    //     method: "GET",
-    //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
-    // }).then(response => response.json()).then(data => {
-    //
-    // })
+    // localStorage.setItem('Stepa', Math.random())
+    // // TODO
+    // // fetch(url_, {
+    // //     method: "GET",
+    // //     headers: {"Accept": 'application/json', "Content-type": 'application/json'}
+    // // }).then(response => response.json()).then(data => {
+    // //
+    // // })
 });
 
 const modifyStyle = new Style({

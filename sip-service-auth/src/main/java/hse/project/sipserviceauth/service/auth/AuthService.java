@@ -34,7 +34,7 @@ public class AuthService {
                 .name(request.getName())
                 .surname(request.getSurname())
                 .patronymic(request.getPatronymic())
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);

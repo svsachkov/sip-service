@@ -2,11 +2,14 @@ package hse.project.sipserviceauth.service.orders;
 
 import hse.project.sipserviceauth.exception.ApiRequestException;
 import hse.project.sipserviceauth.model.domain.Order;
+import hse.project.sipserviceauth.model.domain.User;
 import hse.project.sipserviceauth.model.request.OrderRequest;
 import hse.project.sipserviceauth.model.response.OrderResponse;
 import hse.project.sipserviceauth.repository.OrderRepository;
+import hse.project.sipserviceauth.repository.UserRepository;
 import hse.project.sipserviceauth.service.CrudService;
 
+import hse.project.sipserviceauth.utils.AuthorizedUser;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -19,12 +22,15 @@ import java.util.List;
 public class OrderService implements CrudService<Order, OrderRequest> {
     private final OrderRepository orderRepository;
 
+    private final UserRepository userRepository;
+
     public OrderResponse createOrder(OrderRequest request) {
         var order = Order.builder()
                 .url(request.getUrl())
                 .modelName(request.getModelName())
                 .createdAt(new Date())
                 .finishedAt(null)
+                .user(AuthorizedUser.getUser())
                 .build();
 
         orderRepository.save(order);
