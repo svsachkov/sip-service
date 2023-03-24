@@ -1,7 +1,6 @@
 package hse.project.sipserviceauth.repository;
 
-import hse.project.sipserviceauth.models.domains.Order;
-import hse.project.sipserviceauth.models.domains.User;
+import hse.project.sipserviceauth.model.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

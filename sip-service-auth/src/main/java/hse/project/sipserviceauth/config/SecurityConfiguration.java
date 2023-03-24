@@ -26,48 +26,24 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .cors()
-//                .and()
-//                .csrf() // Отключаем csrf тк у нас JWT-токены (а не куки например)
-//                .disable()
-//                .authorizeHttpRequests()
-//                .requestMatchers("/auth/**")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-////                .and()
-////                .exceptionHandling()
-////                .authenticationEntryPoint(authenticationEntryPoint())
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout()
-//                .logoutUrl("/auth/logout")
-//                .addLogoutHandler(logoutHandler)
-//                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-//        ;
-
         http
-                .cors()
-                .and()
                 .csrf()
                 .disable()
-                .authorizeRequests()
-//                .requestMatchers("/auth/hello")
-//                .authenticated()
-                .requestMatchers("/auth/**")
-                .permitAll();
-//                .anyRequest()
-//                .authenticated();
-//                .and()
-//                .formLogin()
-//                .loginPage("/login.html")
-//                .permitAll();
-                //.and().formLogin();
+                .authorizeHttpRequests()
+                .requestMatchers("/v1/login", "/v1/register")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout()
+                .logoutUrl("/api/v1/auth/logout")
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
 
         return http.build();
     }
