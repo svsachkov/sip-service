@@ -1,13 +1,14 @@
 package hse.project.sipserviceauth.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
+
 import lombok.*;
+
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.BatchSize;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,14 +29,19 @@ public class Order {
 
     @Column(length = 1000000)
     private String url;
-    private String modelName;
+
+    private String model;
+
     private Date createdAt;
+
     private Date finishedAt;
+
     private boolean status;
+
     @Column(length = 1000000)
     private String result;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     @ToString.Exclude
     private User user;
