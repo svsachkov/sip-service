@@ -1,26 +1,24 @@
 package hse.project.sipserviceauth.service.orders;
 
-import hse.project.sipserviceauth.MyQueue;
 import hse.project.sipserviceauth.SipServiceAuthApplication;
 import hse.project.sipserviceauth.exception.ApiRequestException;
 import hse.project.sipserviceauth.model.domain.Order;
-import hse.project.sipserviceauth.model.domain.User;
 import hse.project.sipserviceauth.model.request.OrderRequest;
-import hse.project.sipserviceauth.model.response.OrderResponse;
+import hse.project.sipserviceauth.model.response.CreateResponse;
+import hse.project.sipserviceauth.model.response.DeleteResponse;
+import hse.project.sipserviceauth.model.response.UpdateResponse;
 import hse.project.sipserviceauth.repository.OrderRepository;
-import hse.project.sipserviceauth.repository.UserRepository;
-import hse.project.sipserviceauth.service.CrudService;
 
+import hse.project.sipserviceauth.service.CrudService;
 import hse.project.sipserviceauth.utils.AuthorizedUser;
+
 import lombok.RequiredArgsConstructor;
 
-import org.aspectj.weaver.ast.Or;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +26,11 @@ public class OrderService implements CrudService<Order, OrderRequest> {
 
     private final OrderRepository orderRepository;
 
-    public OrderResponse createOrder(OrderRequest request) {
-        var order = Order.builder()
-                .url(request.getUrl())
-                .modelName(request.getModelName())
+    @Override
+    public CreateResponse<Order> create(OrderRequest orderRequest) throws ApiRequestException {
+        Order order = Order.builder()
+                .url(orderRequest.getUrl())
+                .model(orderRequest.getModel())
                 .createdAt(new Date())
                 .finishedAt(null)
                 .status(false)
@@ -42,37 +41,32 @@ public class OrderService implements CrudService<Order, OrderRequest> {
         orderRepository.save(order);
         SipServiceAuthApplication.orders.add(order);
 
-        return OrderResponse.builder()
-                .kek("OK")
-                .build();
-    }
-
-    @Override
-    public void create(OrderRequest entity) throws ApiRequestException {
-
+        return new CreateResponse<>("New order created!", order);
     }
 
     @Override
     public List<Order> readAll() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public Order readById(UUID orderId) {
+        return orderRepository.findById(orderId).orElse(null);
+    }
+
+    @Override
+    public UpdateResponse<Order> updateById(UUID id, OrderRequest updated) throws ApiRequestException {
+        //TODO: OrderService - implement update order by id method
         return null;
     }
 
     @Override
-    public Order read(Integer id) {
+    public DeleteResponse<Order> deleteById(UUID orderId) {
+        if (orderRepository.existsById(orderId)) {
+            orderRepository.deleteById(orderId);
+            return new DeleteResponse<>("Order deleted!", orderId);
+        }
+
         return null;
-    }
-
-    @Override
-    public boolean update(Integer id, Order updated) throws ApiRequestException {
-        return false;
-    }
-
-    @Override
-    public boolean delete(Integer id) {
-        return false;
-    }
-
-    public List<Order> getOrders() {
-        return orderRepository.findAllByStatusOrderByCreatedAt(false).orElse(null);
     }
 }

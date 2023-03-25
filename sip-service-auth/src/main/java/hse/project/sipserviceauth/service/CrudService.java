@@ -1,17 +1,22 @@
 package hse.project.sipserviceauth.service;
 
 import hse.project.sipserviceauth.exception.ApiRequestException;
+import hse.project.sipserviceauth.model.response.CreateResponse;
+import hse.project.sipserviceauth.model.response.DeleteResponse;
+import hse.project.sipserviceauth.model.response.UpdateResponse;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface CrudService<T, K> {
-    void create(K entity) throws ApiRequestException;
+public interface CrudService<T, Request> {
+
+    CreateResponse<T> create(Request request) throws ApiRequestException;
 
     List<T> readAll();
 
-    T read(Integer id);
+    T readById(UUID id);
 
-    boolean update(Integer id, T updated) throws ApiRequestException;
+    UpdateResponse<T> updateById(UUID id, Request updated) throws ApiRequestException;
 
-    boolean delete(Integer id);
+    DeleteResponse<T> deleteById(UUID id);
 }

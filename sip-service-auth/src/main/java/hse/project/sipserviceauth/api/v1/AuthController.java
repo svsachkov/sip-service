@@ -1,14 +1,11 @@
 package hse.project.sipserviceauth.api.v1;
 
-import hse.project.sipserviceauth.MyQueue;
-import hse.project.sipserviceauth.model.domain.Order;
 import hse.project.sipserviceauth.model.request.AuthRequest;
 import hse.project.sipserviceauth.model.request.RegisterRequest;
 import hse.project.sipserviceauth.model.response.AuthResponse;
 import hse.project.sipserviceauth.model.response.RegisterResponse;
 import hse.project.sipserviceauth.service.auth.AuthService;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

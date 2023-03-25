@@ -1,9 +1,13 @@
 package hse.project.sipserviceauth.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import hse.project.sipserviceauth.utils.Role;
+
 import jakarta.persistence.*;
+
 import lombok.*;
+
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,11 +28,17 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID user_id;
+
     private String username;
+
     private String name;
+
     private String surname;
+
     private String patronymic;
+
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
