@@ -365,6 +365,7 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
         zIndex: 0
     });
     map.addLayer(imageLayer);
+    source.clear();
 });
 
 document.getElementById("regSubmit").addEventListener('click', function () {
@@ -510,14 +511,17 @@ function addInteractions() {
             // type: shapeSelect.value,
             geometryFunction: geometryFunction,
         });
-        draw.on('drawend', function (evt) {
+        draw.on('drawstart', function (evt) {
             //... unset sketch
-            map.removeInteraction(draw);
+            source.clear();
         }, this);
+        // draw.on('drawend', function (evt) {
+        //     //... unset sketch
+        //     map.removeInteraction(draw);
+        // }, this);
         map.addInteraction(draw);
         snap = new Snap({source: source});
         map.addInteraction(snap);
-        source.clear();
     }
 }
 
