@@ -46,6 +46,8 @@ import GeometryFactory from "./node_modules/jsts/org/locationtech/jts/geom/Geome
 import Feature from "./node_modules/ol/Feature.js";
 // import Bounds, Size
 
+import MultiPolygon from './node_modules/ol/geom/MultiPolygon.js';
+
 const key = '4Z4vZj5CICocrdP4mCFb';
 const attributions =
     '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
@@ -155,9 +157,12 @@ function setInteraction() {
         ],
     });
     dragAndDropInteraction.on('addfeatures', function (event) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", event.features)
         const vectorSource = new VectorSource({
             features: event.features,
         });
+
+        console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFF", vectorSource)
         lst.push(vectorSource)
         map.addLayer(
             new VectorLayer({
@@ -664,7 +669,57 @@ Vue.component('order-row', {
         '</span></div>',
     methods: {
         prt(res) {
-            console.log(res)
+            console.log('STARTED')
+            console.log(JSON.parse(res).features)
+            // console.log([new Feature(JSON.parse(res).features[0])])
+            var coords = JSON.parse(res).features[0].geometry.coordinates
+
+            const feature = new Feature({
+                geometry: new MultiPolygon(coords)
+            });
+
+            console.log(feature)
+
+            const vectorSource = new VectorSource({
+                features: [feature],
+            });
+
+
+            console.log(vectorSource)
+            lst.push(vectorSource)
+            map.addLayer(
+                new VectorLayer({
+                    source: vectorSource,
+                    zIndex: 1
+                })
+            );
+            map.getView().fit(vectorSource.getExtent());
+            console.log("END")
+
+
+
+            // console.log(res)
+            // if (dragAndDropInteraction) {
+            //     map.removeInteraction(dragAndDropInteraction);
+            //     console.log("PRT IF")
+            // }
+            // dragAndDropInteraction = new DragAndDrop({
+            //     formatConstructors: [
+            //         // GPX,
+            //         GeoJSON,
+            //         // IGC,
+            //         // use constructed format to set options
+            //         // new KML({extractStyles: extractStyles.checked}),
+            //         // TopoJSON,
+            //     ],
+            // });
+            // console.log("BEFORE ADD FEATURES")
+            // dragAndDropInteraction.on('addfeatures', function (res) {
+            //
+            //
+            // });
+            // map.addInteraction(dragAndDropInteraction);
+            // console.log("FINISH")
         }
     }
 });
