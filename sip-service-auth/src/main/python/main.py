@@ -54,7 +54,7 @@ pred_mask = (pred_mask.squeeze(0) > 0.6) * 1.0
 with rasterio.open(output_img_path, 'w', **profile) as src:
     src.write(pred_mask)
 
-result = vectorize()
+result, bbox = vectorize(url)
 
 # ------------------------------------DATABASE-----------------------------------------------------
 
@@ -70,9 +70,9 @@ try:
     cursor = connection.cursor()
 
     q = """UPDATE orders
-                SET status = %s, url = %s, finished_at = %s, result = %s
+                SET status = %s, url = %s, finished_at = %s, result = %s, bbox = %s
                 WHERE id = %s"""
-    record = ("true", url, datetime.datetime.now(), result, order_id)
+    record = ("true", url, datetime.datetime.now(), result, bbox, order_id)
 
     cursor.execute(q, record)
 

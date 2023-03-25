@@ -5,6 +5,7 @@ import numpy as np
 import geopandas as gpd
 
 from rasterio.features import shapes
+from shapely import wkt
 
 
 def RasterioGeo(bytestream, mask):
@@ -20,18 +21,23 @@ def t(lst: list):
     return shapely.Polygon([(k[0], k[1]) for k in [j for j in lst[0]]])
 
 
-def save_gj(path, p, c):
+def save_gj(url, path, p, c):
     sp = path.replace('p/', '')
     a = gpd.GeoSeries(p).to_json()
+
+    p2 = wkt.loads(url.split('GEOMETRY=')[1])
+    b = gpd.GeoSeries(p2).to_json()
+    result = b.split("bbox\": [")[1].split("]")[0]
+
     gpd.GeoSeries(p).to_file(f"{sp}{c}.json", driver='GeoJSON', show_bbox=False)  # , crs="EPSG:4326"
-    return a
+    return a, result
 
 
 def to_pol(j):
     return t(j['coordinates'])
 
 
-def vectorize():
+def vectorize(url):
     path = ''
     warnings.filterwarnings("ignore")
     colors = {
@@ -60,4 +66,4 @@ def vectorize():
                 continue
 
             mp = shapely.MultiPolygon(polygons)
-            return save_gj(path, mp, image_name.split('.')[0] + '_' + list(colors.keys())[i])
+            return save_gj(url, path, mp, image_name.split('.')[0] + '_' + list(colors.keys())[i])
