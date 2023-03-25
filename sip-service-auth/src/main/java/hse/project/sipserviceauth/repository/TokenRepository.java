@@ -1,6 +1,7 @@
 package hse.project.sipserviceauth.repository;
 
 import hse.project.sipserviceauth.model.domain.Token;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

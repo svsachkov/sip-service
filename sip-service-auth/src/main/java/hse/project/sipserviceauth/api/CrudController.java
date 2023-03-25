@@ -4,16 +4,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
+import java.util.UUID;
 
-public interface CrudController<Request, Response> {
-    ResponseEntity<Response> create(@RequestBody Request request);
+public interface CrudController<Request> {
 
-    ResponseEntity<List<Response>> read();
+    ResponseEntity<?> create(@RequestBody Request request);
 
-    ResponseEntity<Response> read(@PathVariable Integer id);
+    ResponseEntity<?> readAll();
 
-    ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Request request);
+    ResponseEntity<?> readById(@PathVariable UUID id);
 
-    ResponseEntity<?> delete(@PathVariable Integer id);
+    ResponseEntity<?> updateById(@PathVariable UUID id, @RequestBody Request request);
+
+    ResponseEntity<?> deleteById(@PathVariable UUID id);
 }

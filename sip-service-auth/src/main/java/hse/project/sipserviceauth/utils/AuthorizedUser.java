@@ -1,6 +1,7 @@
 package hse.project.sipserviceauth.utils;
 
 import hse.project.sipserviceauth.model.domain.User;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthorizedUser {
