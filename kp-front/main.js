@@ -4,7 +4,7 @@ import VectorSource from './node_modules/ol/source/Vector.js';
 import VectorLayer from './node_modules/ol/layer/Vector.js';
 import ImageLayer from './node_modules/ol/layer/Image.js';
 import ImageStatic from './node_modules/ol/source/ImageStatic.js';
-import 'bootstrap';
+// import 'bootstrap';
 
 import WKT from './node_modules/ol/format/WKT.js';
 import ImageWMS from './node_modules/ol/source/ImageWMS.js';
@@ -347,6 +347,7 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
         if (features.length === 1) {
             wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
             Bound = features[0].getGeometry().getExtent();
+            console.log(Bound)
         } else {
             // TODO: сделать не только для двух полигонов
             var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
@@ -665,9 +666,67 @@ function getOrders(cOrders, fOrders) {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><span>' +
+    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url)">ПОКАЗАТЬ КАРТИНКУ</button><span>' +
         '</span></div>',
     methods: {
+        showImage(res) {
+            console.log(res)
+            var lst = [];
+            for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+                if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+                    lst.push(map.getLayers().array_[i])
+                }
+            }
+            // console.log(lst);
+            // var f_lst = []
+            // var feat = []
+            // for (let i = 0; i < lst.length; i++) {
+            //     f_lst.push(lst[i].getSource().getFeatures());
+            // }
+            // for (let i = 0; i < f_lst.length; i++) {
+            //     for (let j = 0; j < f_lst[i].length; j++) {
+            //         feat.push(f_lst[i][j]);
+            //     }
+            // }
+            console.log(lst)
+            map.setLayers(lst)
+
+
+            var features = source.getFeatures();
+            var wktRepresenation;
+            var Bound;
+            // console.log(features);
+            if (features.length === 0) {
+                console.log('no shapes');
+                Bound = olGeom._geomFact.getExtent();
+            } else {
+                var format = new WKT();
+                var geom = [];
+                if (features.length === 1) {
+                    wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+                    Bound = features[0].getGeometry().getExtent();
+                } else {
+                    // TODO: сделать не только для двух полигонов
+                    var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+                    wktRepresenation = format.writeGeometry(olGeom._geomFact);
+                    Bound = olGeom._geomFact.getExtent();
+                }
+                // console.log(Bound);
+                // console.log(wktRepresenation);
+            }
+
+            my_str = res
+            var img_ext = olProj.transformExtent(Bound, "EPSG:3857", "EPSG:3857") // EPSG:4326 3857
+            var imageLayer = new ImageLayer({
+                source: new ImageStatic({
+                    url: my_str,
+                    imageExtent: img_ext // east, north, west, south
+                }),
+                zIndex: 0
+            });
+            map.addLayer(imageLayer);
+            source.clear();
+        },
         prt(res) {
             console.log('STARTED')
             console.log(JSON.parse(res).features)
