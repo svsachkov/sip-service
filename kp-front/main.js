@@ -658,11 +658,15 @@ function getOrders(cOrders, fOrders) {
 }
 
 
-
 Vue.component('order-row', {
-    props: ['order'],
-    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <span>' +
-        '</span></div>'
+    props: ['order', 'isReady'],
+    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><span>' +
+        '</span></div>',
+    methods: {
+        prt(res) {
+            console.log(res)
+        }
+    }
 });
 
 Vue.component('orders-list', {
@@ -673,9 +677,9 @@ Vue.component('orders-list', {
         }
     },
     template: '<div>' +
-        'СОЗДАННЫЕ <order-row v-for="order in cOrders" :key="order.id" :order="order"/>' +
+        'СОЗДАННЫЕ <order-row v-for="order in cOrders" :key="order.id" :order="order" :isReady="false"/>' +
         '<p></p>' +
-        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order"/>' +
+        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order":isReady="true"/>' +
         '</div>',
     created: function () {
         getOrders(this.cOrders, this.fOrders)
