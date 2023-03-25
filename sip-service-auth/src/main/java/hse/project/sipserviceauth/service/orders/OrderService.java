@@ -35,6 +35,7 @@ public class OrderService implements CrudService<Order, OrderRequest> {
                 .finishedAt(null)
                 .status(false)
                 .result("")
+                .bbox("")
                 .user(AuthorizedUser.getUser())
                 .build();
 
