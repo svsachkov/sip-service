@@ -535,7 +535,7 @@ viewProjSelect.addEventListener('change', onChangeProjection);
 
 
 // ----------------------------------------------------------------------
-
+const url = 'http://localhost:8000'
 // var orderApi = Vue.resource('http://localhost:8000/v1/order')
 
 document.getElementById("regSubmit").addEventListener('click', function () {
@@ -583,7 +583,7 @@ document.getElementById("logSubmit").addEventListener('click', function () {
 });
 
 const interval = setInterval(function() {
-    const url_ = 'http://localhost:8000/v1/order'
+    const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
     console.log(token)
@@ -602,7 +602,7 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
     const url = localStorage.getItem("url")
     const token = localStorage.getItem("Token")
 
-    const url_ = 'http://localhost:8000/v1/order'
+    const url_ = 'http://localhost:8000/order'
     fetch(url_, {
         method: "POST",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
@@ -627,7 +627,7 @@ document.getElementById("to_register_page").addEventListener('click', function (
 
 function updateOrders() {
     console.log("UPDATE ORDERS")
-    const url_ = 'http://localhost:8000/v1/order'
+    const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
     console.log(token)
@@ -644,7 +644,7 @@ function updateOrders() {
 
 function getOrders(cOrders, fOrders) {
     console.log("GET ORDERS")
-    const url_ = 'http://localhost:8000/v1/order'
+    const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
     console.log(token)
