@@ -47,6 +47,7 @@ import Feature from "./node_modules/ol/Feature.js";
 // import Bounds, Size
 
 import MultiPolygon from './node_modules/ol/geom/MultiPolygon.js';
+import {Extent} from "ol/interaction.js";
 
 const key = '4Z4vZj5CICocrdP4mCFb';
 const attributions =
@@ -164,6 +165,14 @@ function setInteraction() {
 
         console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFF", vectorSource)
         lst.push(vectorSource)
+        var lst_clear = [];
+        for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+            if (map.getLayers().array_[i].values_['zIndex'] !== 1 || map.getLayers().array_[i].values_['zIndex'] !== 3) {
+                lst_clear.push(map.getLayers().array_[i])
+            }
+        }
+
+        map.setLayers([styles[styleSelector.value]]);
         map.addLayer(
             new VectorLayer({
                 source: vectorSource,
@@ -300,7 +309,7 @@ document.getElementById("exportBtnL").addEventListener('click', function () {
 document.getElementById("clearBtnL").addEventListener('click', function () {
     var lst = [];
     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
-        if (map.getLayers().array_[i].values_['zIndex'] !== 1) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 1 && map.getLayers().array_[i].values_['zIndex'] !== 3) {
             lst.push(map.getLayers().array_[i])
         }
     }
@@ -666,28 +675,31 @@ function getOrders(cOrders, fOrders) {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url)">ПОКАЗАТЬ КАРТИНКУ</button><span>' +
+    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button><span>' +
         '</span></div>',
     methods: {
-        showImage(res) {
-            console.log(res)
+        hideImage() {
+            var lst = [];
+            for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+                if (map.getLayers().array_[i].values_['zIndex'] !== 2) {
+                    lst.push(map.getLayers().array_[i])
+                }
+            }
+
+            map.setLayers(lst)
+        },
+        showImage(res, b) {
+            console.log("RES:", res)
+            const bbox = b.split(', ').map(Number);
+            console.log("BBOX:", bbox)
+
             var lst = [];
             for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
                 if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
                     lst.push(map.getLayers().array_[i])
                 }
             }
-            // console.log(lst);
-            // var f_lst = []
-            // var feat = []
-            // for (let i = 0; i < lst.length; i++) {
-            //     f_lst.push(lst[i].getSource().getFeatures());
-            // }
-            // for (let i = 0; i < f_lst.length; i++) {
-            //     for (let j = 0; j < f_lst[i].length; j++) {
-            //         feat.push(f_lst[i][j]);
-            //     }
-            // }
+
             console.log(lst)
             map.setLayers(lst)
 
@@ -698,7 +710,7 @@ Vue.component('order-row', {
             // console.log(features);
             if (features.length === 0) {
                 console.log('no shapes');
-                Bound = olGeom._geomFact.getExtent();
+                Bound = bbox;
             } else {
                 var format = new WKT();
                 var geom = [];
@@ -709,22 +721,24 @@ Vue.component('order-row', {
                     // TODO: сделать не только для двух полигонов
                     var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
                     wktRepresenation = format.writeGeometry(olGeom._geomFact);
-                    Bound = olGeom._geomFact.getExtent();
+                    Bound = olProj.transformExtent(olGeom._geomFact.getExtent(), projection.value, projection.value);
                 }
                 // console.log(Bound);
                 // console.log(wktRepresenation);
             }
 
-            my_str = res
-            var img_ext = olProj.transformExtent(Bound, "EPSG:3857", "EPSG:3857") // EPSG:4326 3857
+            my_str = res.replace('tiff', 'jpeg')
+            var img_ext = Bound // EPSG:4326 3857
+
             var imageLayer = new ImageLayer({
                 source: new ImageStatic({
                     url: my_str,
                     imageExtent: img_ext // east, north, west, south
                 }),
-                zIndex: 0
+                zIndex: 2
             });
             map.addLayer(imageLayer);
+            console.log("<>", map.getLayers())
             source.clear();
         },
         prt(res) {
@@ -746,10 +760,20 @@ Vue.component('order-row', {
 
             console.log(vectorSource)
             lst.push(vectorSource)
+
+            var lst_clear = [];
+            for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+                if (map.getLayers().array_[i].values_['zIndex'] !== 1 || map.getLayers().array_[i].values_['zIndex'] !== 3) {
+                    lst_clear.push(map.getLayers().array_[i])
+                }
+            }
+
+            map.setLayers([styles[styleSelector.value]]);
+
             map.addLayer(
                 new VectorLayer({
                     source: vectorSource,
-                    zIndex: 1
+                    zIndex: 3
                 })
             );
             map.getView().fit(vectorSource.getExtent());
