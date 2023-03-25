@@ -12,7 +12,7 @@ def RasterioGeo(bytestream, mask):
     with rasterio.open(bytestream) as dataset:
         for geom, val in shapes(mask, transform=dataset.transform):
             if val != 0.0:
-                geom_all.append(rasterio.warp.transform_geom(dataset.crs, 'EPSG:4326', geom))  # , precision=6
+                geom_all.append(rasterio.warp.transform_geom(dataset.crs, 'EPSG:3857', geom))  # , precision=6
         return geom_all
 
 
