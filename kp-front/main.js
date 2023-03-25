@@ -405,7 +405,7 @@ document.getElementById("logSubmit").addEventListener('click', function () {
         })
     }).then(response => response.json()).then(
         function (response) {
-            localStorage.setItem('Token', response["token"])
+            localStorage.setItem('Token', "Bearer " + response["token"])
             console.log(response)
         }
     )
@@ -415,6 +415,7 @@ const interval = setInterval(function() {
     const url_ = 'http://localhost:8000/v1/order'
     const token = localStorage.getItem("Token")
 
+    console.log(token)
     fetch(url_, {
         method: "GET",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
@@ -428,7 +429,7 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
     const url_ = 'http://localhost:8000/v1/order'
     fetch(url_, {
         method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": `Bearer: ${token}`},
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
         body: JSON.stringify({
             "url": url,
             "model_name": "model"

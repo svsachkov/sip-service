@@ -1,6 +1,7 @@
 package hse.project.sipserviceauth.service.orders;
 
 import hse.project.sipserviceauth.MyQueue;
+import hse.project.sipserviceauth.SipServiceAuthApplication;
 import hse.project.sipserviceauth.exception.ApiRequestException;
 import hse.project.sipserviceauth.model.domain.Order;
 import hse.project.sipserviceauth.model.domain.User;
@@ -34,10 +35,12 @@ public class OrderService implements CrudService<Order, OrderRequest> {
                 .createdAt(new Date())
                 .finishedAt(null)
                 .status(false)
+                .result("")
                 .user(AuthorizedUser.getUser())
                 .build();
 
         orderRepository.save(order);
+        SipServiceAuthApplication.orders.add(order);
 
         return OrderResponse.builder()
                 .kek("OK")

@@ -1,99 +1,104 @@
-# import PIL.Image
-# import rasterio
-# import torch
-# import requests
-# import numpy as np
-# from PIL import Image
-# from io import BytesIO
-# import albumentations as A
-# from torchvision.utils import save_image
-# from SegmentationModel import SegmentationModel
-#
-# if __name__ == '__main__':
-#     # Parameters:
-#     URL = "https://services.sentinel-hub.com/ogc"
-#     SERVICE = "wms"
-#     INSTANCE_ID = "cbe156b7-660c-4640-a5a1-ea774aecf9ce"
-#     REQUEST = "GetMap"
-#     BBOX = "3238005,5039853,3244050,5045897"
-#     LAYERS = "NATURAL-COLOR&MAXCC=20"
-#     WIDTH = "256"
-#     HEIGHT = "256"
-#     FORMAT = "image/tiff"
-#     TIME = "2018-03-29/2018-05-29"
-#
-#     url = f'{URL}/{SERVICE}/{INSTANCE_ID}?' \
-#           f'REQUEST={REQUEST}&' \
-#           f'BBOX={BBOX}&' \
-#           f'LAYERS={LAYERS}&' \
-#           f'WIDTH={WIDTH}&HEIGHT={HEIGHT}&' \
-#           f'FORMAT={FORMAT}&' \
-#           f'TIME={TIME}'
-#     #url = "http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/tiff&TIME=2018-03-29/2018-05-29&GEOMETRY=POLYGON((-6531326.723977071 -4126551.186669888,-6469662.499631802 -4126551.186669888,-6469662.499631802 -4085160.6581025296,-6531326.723977071 -4085160.6581025296,-6531326.723977071 -4126551.186669888))"
-#     url = "http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/tiff&TIME=2018-03-29/2018-05-29&GEOMETRY=POLYGON((-8435725.686699832 5680049.6688012425,-8416071.278129885 5680049.6688012425,-8416071.278129885 5701562.535136176,-8435725.686699832 5701562.535136176,-8435725.686699832 5680049.6688012425))"
-#     x = requests.get(url)
-#     # Save input image:
-#     with open('input.tiff', 'wb') as f:
-#         f.write(x.content)
-#
-#     sat_img = rasterio.open('images/inputs/input.tiff', 'r')
-#     profile = sat_img.profile
-#     profile['count'] = 1
-#     print(profile)
-#     transform = A.Compose([A.Resize(256, 256, p=1.0, interpolation=3)])
-#
-#     img = rasterio.open('images/inputs/input.tiff', 'r').read()
-#     img = np.asarray(img)[:3].transpose((1, 2, 0))
-#     PIL.Image.fromarray(img).show()
-#     print('img', img.shape)
-#     img = transform(image=img)['image']
-#     img = np.transpose(img, (2, 0, 1))
-#     img = img / 255.0
-#     img = torch.tensor(img)
-#
-#     model = SegmentationModel()
-#     model.load_state_dict(torch.load('models/water.pt', map_location=torch.device('cpu')))
-#     logits_mask = model(img.to('cpu', dtype=torch.float32).unsqueeze(0))
-#     pred_mask = torch.sigmoid(logits_mask)
-#     pred_mask = (pred_mask.squeeze(0) > 0.6) * 1.0
-#     print(pred_mask.size())
-#
-#     # Save output image:
-#     with rasterio.open('images/outputs/output.tiff', 'w', **profile) as src:
-#         src.write(pred_mask)
+from vectorize import vectorize
+
+import sys
+
+url = sys.argv[1].replace('jpeg', 'tiff')
+order_id = sys.argv[2]
+# url = 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&CRS' \
+#       '=EPSG:3857&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT' \
+#       '=image/tiff&TIME=2018-03-29/2018-05-29&GEOMETRY=POLYGON((1089372.5680352768 3990882.3458559057,' \
+#       '1155769.285697225 3990882.3458559057,1155769.285697225 4066966.6497494457,1089372.5680352768 ' \
+#       '4066966.6497494457,1089372.5680352768 3990882.3458559057))' \
+#     .replace('jpeg', 'tiff')
+#order_id = '89f4fd0b-6945-45d7-aab2-18f064383185'
+model_name = 'water'
+
+model_path = f'src/main/python/models/{model_name}.pt'
+input_img_path = f'src/main/python/images/inputs/input_{model_name}.tiff'
+output_img_path = f'src/main/python/images/outputs/output_{model_name}.tiff'
+
 import requests
-import json
 
-SERVICE = "wms"
-INSTANCE_ID = "cbe156b7-660c-4640-a5a1-ea774aecf9ce"
-REQUEST = "GetMap"
-BBOX = "3238005,5039853,3244050,5045897"
-LAYERS = "NATURAL-COLOR&MAXCC=20"
-WIDTH = "256"
-HEIGHT = "256"
-FORMAT = "image/jpeg"
-TIME = "2018-03-29/2018-05-29"
+x = requests.get(url)
+# Save input image:
+with open(input_img_path, 'wb') as f:
+    f.write(x.content)
 
-# url = "https://services.sentinel-hub.com/ogc"
-# url = f'{url}/{SERVICE}/{INSTANCE_ID}?' \
-#       f'REQUEST={REQUEST}&' \
-#       f'BBOX={BBOX}&' \
-#       f'LAYERS={LAYERS}&' \
-#       f'WIDTH={WIDTH}&HEIGHT={HEIGHT}&' \
-#       f'FORMAT={FORMAT}&' \
-#       f'TIME={TIME}'
-# x = requests.get(url)
+import torch
+import rasterio
+import PIL.Image
+import numpy as np
+import albumentations as A
+from SegmentationModel import SegmentationModel
+
+sat_img = rasterio.open(input_img_path, 'r')
+profile = sat_img.profile
+profile['count'] = 1
+transform = A.Compose([A.Resize(256, 256, p=1.0, interpolation=3)])
+
+img = rasterio.open(input_img_path, 'r').read()
+img = np.asarray(img)[:3].transpose((1, 2, 0))
+PIL.Image.fromarray(img).show()
+img = transform(image=img)['image']
+img = np.transpose(img, (2, 0, 1))
+img = img / 255.0
+img = torch.tensor(img)
+
+model = SegmentationModel()
+model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+logits_mask = model(img.to('cpu', dtype=torch.float32).unsqueeze(0))
+pred_mask = torch.sigmoid(logits_mask)
+pred_mask = (pred_mask.squeeze(0) > 0.6) * 1.0
+
+# Save output image:
+with rasterio.open(output_img_path, 'w', **profile) as src:
+    src.write(pred_mask)
+
+result = vectorize()
+
+# ------------------------------------DATABASE-----------------------------------------------------
+
+import psycopg2
+import datetime
+
+try:
+    connection = psycopg2.connect(user="postgres",
+                                  password="3172",
+                                  host="127.0.0.1",
+                                  port="5432",
+                                  database="data")
+    cursor = connection.cursor()
+
+    q = """UPDATE orders
+                SET status = %s, url = %s, finished_at = %s, result = %s
+                WHERE id = %s"""
+    record = ("true", url, datetime.datetime.now(), result, order_id)
+
+    cursor.execute(q, record)
+
+    connection.commit()
+    count = cursor.rowcount
+    print(count, "Record inserted successfully into mobile table")
+
+except (Exception, psycopg2.Error) as error:
+    print("Failed to insert record into mobile table", error)
+
+finally:
+    # closing database connection.
+    if connection:
+        cursor.close()
+        connection.close()
+        print("PostgreSQL connection is closed")
+
+# import requests
 #
-# with open('src/main/python/wait.jpg', 'wb') as f:
-#     f.write(x.content)
+# user = {
+#       "username": "python",
+#       "password": "admin",
+#       "name": "Python",
+#       "surname": "Python",
+#       "patronymic": "Python"
+# }
 
-user = {
-      "username": "zzzzzzzzzzzzz",
-      "password": "admin",
-      "name": "zzzzzzzzzzzz",
-      "surname": "zzzzzzzzzzzzz",
-      "patronymic": "zzzzzzzzzzzzzz"
-}
-
-headers = {"Accept": 'application/json', "Content-type": 'application/json'}
-request = requests.post('http://localhost:8000/register', headers=headers, json=user)
+# headers = {"Accept": 'application/json', "Content-type": 'application/json'}
+# request = requests.post('http://localhost:8000/register', headers=headers, json=user)

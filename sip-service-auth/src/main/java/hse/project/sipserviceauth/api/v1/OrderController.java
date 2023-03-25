@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,6 @@ public class OrderController implements CrudController<OrderRequest, OrderRespon
     }
 
     @Override
-    @CrossOrigin(origins = "http://127.0.0.1:5173")
     @PostMapping("/order")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<OrderResponse> create(OrderRequest request) {
@@ -32,8 +32,20 @@ public class OrderController implements CrudController<OrderRequest, OrderRespon
     }
 
     @GetMapping("/order")
-    public ResponseEntity<List<Order>> getOrders() {
-        return ResponseEntity.ok(AuthorizedUser.getUser().getOrders());
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<List<Order>>> getOrders() {
+        List<Order> orders = AuthorizedUser.getUser().getOrders();
+        List<Order> readyOrders = new ArrayList<>();
+        List<Order> notReadyOrders = new ArrayList<>();
+        for (Order order : orders) {
+            if (order.isStatus()) {
+                readyOrders.add(order);
+            } else {
+                notReadyOrders.add(order);
+            }
+        }
+
+        return ResponseEntity.ok(new ArrayList<>(List.of(notReadyOrders, readyOrders)));
     }
 
     @Override

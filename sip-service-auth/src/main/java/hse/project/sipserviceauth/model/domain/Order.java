@@ -25,11 +25,15 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(length = 1000000)
     private String url;
     private String modelName;
     private Date createdAt;
     private Date finishedAt;
     private boolean status;
+    @Column(length = 1000000)
+    private String result;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
