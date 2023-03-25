@@ -11,6 +11,7 @@
         }
     </style>
     <title>SVM</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 </head>
 <body>
 <h1>Home page</h1>
@@ -29,6 +30,7 @@
     </form>
     <span>Уже есть аккаунт? <a id="to_login_page_from_reg">Войти</a></span>
 </div>
+
 <div class="login_page" id="login_page">
     <div class="regHeader" id="logHeader">Войти в аккаунт</div>
     <div class="regInfo" id="logInfo">Чтобы просматривать заказы, войдите в аккаунт или создайте его</div>
@@ -39,6 +41,7 @@
     </form>
     <span>Вы здесь впервые?<a id="to_register_page_from_log">Зарегистироваться</a></span>
 </div>
+
 <div class="workbench_page" id="workbench_page">
     <div id="controls">
         <div id="info"></div>
@@ -98,6 +101,7 @@
         <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
     </div>
 </div>
+
 <div class="account_page" id="account_page">
     <div class="accHeader" id="accHeader">Профиль пользователя</div>
     <div class="accInfo" id="accInfo">Вы можете изменить данные: просто введите новые значения в нужные поля и нажмите
@@ -116,12 +120,17 @@
     <button class="to_workbench_page" type="button" id="to_workbench_page"><span>Вернуться на сайт</span></button>
     <button class="to_login_page" type="button" id="to_login_page"><span>Выйти</span></button>
 </div>
+
 <div class="delete_acc_page" id="delete_acc_page">
     <div class="deleteHeader" id="deleteHeader">Удалить аккаунт</div>
     <div class="deleteInfo" id="deleteInfo">Вы действительно хотите удалить аккаунт?</div>
     <button class="to_register_page" type="button" id="to_register_page"><span>Удалить</span></button>
     <button class="to_account_page" type="button" id="to_account_page"><span>Отменить</span></button>
 </div>
+
+<span id="app">Сообщение: {{ msg }}</span>
 <script type="module" src="/main.js"></script>
+<script type="module" src="/controller.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 </body>
 </html>

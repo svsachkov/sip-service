@@ -368,79 +368,6 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     source.clear();
 });
 
-document.getElementById("regSubmit").addEventListener('click', function () {
-    console.log("reg")
-    const username = document.getElementById("regLogin").value.toString();
-    const password = document.getElementById("regPwd").value.toString();
-    const confirmed = document.getElementById("pereatPwd").value.toString();
-    const surname = document.getElementById("surname").value.toString();
-    const name = document.getElementById("name").value.toString();
-    const patronymic = document.getElementById("patronymic").value.toString();
-
-    const url_ = 'http://localhost:8000/register'
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
-        body: JSON.stringify({
-            "username": username,
-            "password": password,
-            "name": name,
-            "surname": surname,
-            "patronymic": patronymic
-        })
-    }).then(response => response.json()).then(console.log)
-});
-
-document.getElementById("logSubmit").addEventListener('click', function () {
-    const username = document.getElementById("logLogin").value.toString();
-    const password = document.getElementById("logPwd").value.toString();
-
-    const url_ = 'http://localhost:8000/login'
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
-        body: JSON.stringify({
-            "username": username,
-            "password": password
-        })
-    }).then(response => response.json()).then(
-        function (response) {
-            localStorage.setItem('Token', "Bearer " + response["token"])
-            console.log(response)
-        }
-    )
-});
-
-const interval = setInterval(function() {
-    const url_ = 'http://localhost:8000/v1/order'
-    const token = localStorage.getItem("Token")
-
-    console.log(token)
-    fetch(url_, {
-        method: "GET",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
-    }).then(response => response.json()).then(console.log)
-}, 5000);
-
-document.getElementById("StepaBtn").addEventListener('click', function () {
-    const url = localStorage.getItem("url")
-    const token = localStorage.getItem("Token")
-
-    const url_ = 'http://localhost:8000/v1/order'
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
-        body: JSON.stringify({
-            "url": url,
-            "model_name": "model"
-        })
-    }).then(response => response.json()).then(
-        function (response) {
-            console.log(response)
-        }
-    )
-});
-
 const modifyStyle = new Style({
     image: new CircleStyle({
         radius: 5,
@@ -594,3 +521,121 @@ viewProjSelect.addEventListener('change', onChangeProjection);
 // document.querySelector('#app').innerHTML = `
 // <div></div>
 // `
+
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------
+
+document.getElementById("regSubmit").addEventListener('click', function () {
+    console.log("reg")
+    const username = document.getElementById("regLogin").value.toString();
+    const password = document.getElementById("regPwd").value.toString();
+    const confirmed = document.getElementById("pereatPwd").value.toString();
+    const surname = document.getElementById("surname").value.toString();
+    const name = document.getElementById("name").value.toString();
+    const patronymic = document.getElementById("patronymic").value.toString();
+
+    const url_ = 'http://localhost:8000/register'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
+        body: JSON.stringify({
+            "username": username,
+            "password": password,
+            "name": name,
+            "surname": surname,
+            "patronymic": patronymic
+        })
+    }).then(response => response.json()).then(console.log)
+});
+
+document.getElementById("logSubmit").addEventListener('click', function () {
+    const username = document.getElementById("logLogin").value.toString();
+    const password = document.getElementById("logPwd").value.toString();
+
+    const url_ = 'http://localhost:8000/login'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
+        body: JSON.stringify({
+            "username": username,
+            "password": password
+        })
+    }).then(response => response.json()).then(
+        function (response) {
+            localStorage.setItem('Token', "Bearer " + response["token"])
+            console.log(response)
+            app.msg = localStorage.getItem("Token")
+        }
+    )
+});
+
+const interval = setInterval(function() {
+    const url_ = 'http://localhost:8000/v1/order'
+    const token = localStorage.getItem("Token")
+
+    console.log(token)
+    fetch(url_, {
+        method: "GET",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+    }).then(response => response.json()).then(console.log)
+}, 5000);
+
+document.getElementById("StepaBtn").addEventListener('click', function () {
+    const url = localStorage.getItem("url")
+    const token = localStorage.getItem("Token")
+
+    const url_ = 'http://localhost:8000/v1/order'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
+        body: JSON.stringify({
+            "url": url,
+            "model_name": "model"
+        })
+    }).then(response => response.json()).then(
+        function (response) {
+            console.log(response)
+        }
+    )
+});
+
+
+document.getElementById("to_register_page").addEventListener('click', function () {
+    localStorage.removeItem("Token")
+    console.log("Token REMOVED")
+    app.msg = ''
+});
+
+var app = new Vue({
+    el: '#app',
+    data: {
+        msg: localStorage.getItem("Token")
+    },
+    created: function() {
+        console.log("CREATED")
+        if (localStorage.getItem("Token") == null) {
+            $('#register_page').hide()
+        }
+    },
+    watch: {
+        msg(newValue, oldValue) {
+            console.log("WATCH", newValue, oldValue)
+            if (localStorage.getItem("Token") != null) {
+                $('#register_page').show()
+            } else {
+                $('#register_page').hide()
+            }
+
+        }
+    }
+})
