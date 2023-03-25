@@ -11,10 +11,13 @@
         }
     </style>
     <title>SVM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.3"></script>
 </head>
 <body>
-<h1>Home page</h1>
+<h1 hidden="hidden">Home page</h1>
+<span id="app">Сообщение: {{ msg }}</span>
 <!--<div id="app"></div>-->
 <div class="register_page" id="register_page">
     <div class="regHeader" id="regHeader">Создать аккант</div>
@@ -22,7 +25,7 @@
     <form>
         <input required id="regLogin" type="text" placeholder="Логин"/>
         <input required id="regPwd" type="password" placeholder="Придумайте пароль"/>
-        <input id="pereatPwd" type="password" placeholder="Повторите пароль"/>
+        <input id="repeatPwd" type="password" placeholder="Повторите пароль"/>
         <input id="surname" type="text" placeholder="Фамилия"/>
         <input id="name" type="text" placeholder="Имя"/>
         <input id="patronymic" type="text" placeholder="Отчество"/>
@@ -102,7 +105,7 @@
     </div>
 </div>
 
-<div class="account_page" id="account_page">
+<div hidden="hidden" class="account_page" id="account_page">
     <div class="accHeader" id="accHeader">Профиль пользователя</div>
     <div class="accInfo" id="accInfo">Вы можете изменить данные: просто введите новые значения в нужные поля и нажмите
         сохранить
@@ -128,9 +131,9 @@
     <button class="to_account_page" type="button" id="to_account_page"><span>Отменить</span></button>
 </div>
 
-<span id="app">Сообщение: {{ msg }}</span>
 <script type="module" src="/main.js"></script>
 <script type="module" src="/controller.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import VectorSource from './node_modules/ol/source/Vector.js';
 import VectorLayer from './node_modules/ol/layer/Vector.js';
 import ImageLayer from './node_modules/ol/layer/Image.js';
 import ImageStatic from './node_modules/ol/source/ImageStatic.js';
+import 'bootstrap';
 
 import WKT from './node_modules/ol/format/WKT.js';
 import ImageWMS from './node_modules/ol/source/ImageWMS.js';
@@ -535,11 +536,13 @@ viewProjSelect.addEventListener('change', onChangeProjection);
 
 // ----------------------------------------------------------------------
 
+// var orderApi = Vue.resource('http://localhost:8000/v1/order')
+
 document.getElementById("regSubmit").addEventListener('click', function () {
     console.log("reg")
     const username = document.getElementById("regLogin").value.toString();
     const password = document.getElementById("regPwd").value.toString();
-    const confirmed = document.getElementById("pereatPwd").value.toString();
+    const confirmed = document.getElementById("repeatPwd").value.toString();
     const surname = document.getElementById("surname").value.toString();
     const name = document.getElementById("name").value.toString();
     const patronymic = document.getElementById("patronymic").value.toString();
@@ -587,7 +590,12 @@ const interval = setInterval(function() {
     fetch(url_, {
         method: "GET",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
-    }).then(response => response.json()).then(console.log)
+    }).then(response => response.json()).then(data => {
+        console.log(data)
+        updateOrders()
+    })
+
+
 }, 5000);
 
 document.getElementById("StepaBtn").addEventListener('click', function () {
@@ -605,6 +613,7 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
     }).then(response => response.json()).then(
         function (response) {
             console.log(response)
+            updateOrders()
         }
     )
 });
@@ -616,10 +625,70 @@ document.getElementById("to_register_page").addEventListener('click', function (
     app.msg = ''
 });
 
+function updateOrders() {
+    console.log("UPDATE ORDERS")
+    const url_ = 'http://localhost:8000/v1/order'
+    const token = localStorage.getItem("Token")
+
+    console.log(token)
+    fetch(url_, {
+        method: "GET",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+    }).then(response => response.json()).then(data => {
+        app.createdOrders = []
+        app.finishedOrders = []
+        data[0].forEach(cOrder => app.createdOrders.push(cOrder))
+        data[1].forEach(fOrder => app.finishedOrders.push(fOrder))
+    })
+}
+
+function getOrders(cOrders, fOrders) {
+    console.log("GET ORDERS")
+    const url_ = 'http://localhost:8000/v1/order'
+    const token = localStorage.getItem("Token")
+
+    console.log(token)
+    fetch(url_, {
+        method: "GET",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+    }).then(response => response.json()).then(data => {
+        data[0].forEach(cOrder => cOrders.push(cOrder))
+        data[1].forEach(fOrder => fOrders.push(fOrder))
+    })
+}
+
+
+
+Vue.component('order-row', {
+    props: ['order'],
+    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <span>' +
+        '</span></div>'
+});
+
+Vue.component('orders-list', {
+    props: ['fOrders', 'cOrders'],
+    data: function () {
+        return {
+            order: null
+        }
+    },
+    template: '<div>' +
+        'СОЗДАННЫЕ <order-row v-for="order in cOrders" :key="order.id" :order="order"/>' +
+        '<p></p>' +
+        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order"/>' +
+        '</div>',
+    created: function () {
+        getOrders(this.cOrders, this.fOrders)
+    }
+});
+
 var app = new Vue({
     el: '#app',
+    template: '<orders-list :fOrders="finishedOrders" :cOrders="createdOrders"/>',
     data: {
-        msg: localStorage.getItem("Token")
+        msg: localStorage.getItem("Token"),
+        createdOrders: [],
+        finishedOrders: []
     },
     created: function() {
         console.log("CREATED")
