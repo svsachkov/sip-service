@@ -2,8 +2,22 @@ from vectorize import vectorize
 
 import sys
 
+import torch
+import rasterio
+import PIL.Image
+import numpy as np
+import albumentations as A
+from SegmentationModel import SegmentationModel
+
+import psycopg2
+import datetime
+
+import requests
+
+
 url = sys.argv[1].replace('jpeg', 'tiff')
-order_id = sys.argv[2]
+url2 = sys.argv[2].replace('jpeg', 'tiff')
+order_id = sys.argv[3]
 # url = 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&CRS' \
 #       '=EPSG:3857&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT' \
 #       '=image/tiff&TIME=2018-03-29/2018-05-29&GEOMETRY=POLYGON((1089372.5680352768 3990882.3458559057,' \
@@ -17,49 +31,48 @@ model_path = f'src/main/python/models/{model_name}.pt'
 input_img_path = f'src/main/python/images/inputs/input_{model_name}.tiff'
 output_img_path = f'src/main/python/images/outputs/output_{model_name}.tiff'
 
-import requests
+def process(url):
+    x = requests.get(url)
+    # Save input image:
+    with open(input_img_path, 'wb') as f:
+        f.write(x.content)
 
-x = requests.get(url)
-# Save input image:
-with open(input_img_path, 'wb') as f:
-    f.write(x.content)
+    sat_img = rasterio.open(input_img_path, 'r')
+    profile = sat_img.profile
+    profile['count'] = 1
+    transform = A.Compose([A.Resize(256, 256, p=1.0, interpolation=3)])
 
-import torch
-import rasterio
-import PIL.Image
-import numpy as np
-import albumentations as A
-from SegmentationModel import SegmentationModel
+    img = rasterio.open(input_img_path, 'r').read()
+    img = np.asarray(img)[:3].transpose((1, 2, 0))
+    PIL.Image.fromarray(img).show()
+    img = transform(image=img)['image']
+    img = np.transpose(img, (2, 0, 1))
+    img = img / 255.0
+    img = torch.tensor(img)
 
-sat_img = rasterio.open(input_img_path, 'r')
-profile = sat_img.profile
-profile['count'] = 1
-transform = A.Compose([A.Resize(256, 256, p=1.0, interpolation=3)])
+    model = SegmentationModel()
+    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    logits_mask = model(img.to('cpu', dtype=torch.float32).unsqueeze(0))
+    pred_mask = torch.sigmoid(logits_mask)
+    pred_mask = (pred_mask.squeeze(0) > 0.6) * 1.0
 
-img = rasterio.open(input_img_path, 'r').read()
-img = np.asarray(img)[:3].transpose((1, 2, 0))
-PIL.Image.fromarray(img).show()
-img = transform(image=img)['image']
-img = np.transpose(img, (2, 0, 1))
-img = img / 255.0
-img = torch.tensor(img)
+    # Save output image:
+    with rasterio.open(output_img_path, 'w', **profile) as src:
+        src.write(pred_mask)
 
-model = SegmentationModel()
-model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-logits_mask = model(img.to('cpu', dtype=torch.float32).unsqueeze(0))
-pred_mask = torch.sigmoid(logits_mask)
-pred_mask = (pred_mask.squeeze(0) > 0.6) * 1.0
+    result, bbox = vectorize(url)
 
-# Save output image:
-with rasterio.open(output_img_path, 'w', **profile) as src:
-    src.write(pred_mask)
+    return result, bbox
 
-result, bbox = vectorize(url)
+
+result, bbox = process(url)
+
+result2 = ""
+if url2 != "":
+    result2, bbox = process(url2)
+
 
 # ------------------------------------DATABASE-----------------------------------------------------
-
-import psycopg2
-import datetime
 
 try:
     connection = psycopg2.connect(user="postgres",
@@ -70,9 +83,9 @@ try:
     cursor = connection.cursor()
 
     q = """UPDATE orders
-                SET status = %s, url = %s, finished_at = %s, result = %s, bbox = %s
+                SET status = %s, url = %s, finished_at = %s, result = %s, result2 = %s, bbox = %s
                 WHERE id = %s"""
-    record = ("true", url, datetime.datetime.now(), result, bbox, order_id)
+    record = ("true", url, datetime.datetime.now(), result, result2, bbox, order_id)
 
     cursor.execute(q, record)
 
@@ -89,16 +102,3 @@ finally:
         cursor.close()
         connection.close()
         print("PostgreSQL connection is closed")
-
-# import requests
-#
-# user = {
-#       "username": "python",
-#       "password": "admin",
-#       "name": "Python",
-#       "surname": "Python",
-#       "patronymic": "Python"
-# }
-
-# headers = {"Accept": 'application/json', "Content-type": 'application/json'}
-# request = requests.post('http://localhost:8000/register', headers=headers, json=user)

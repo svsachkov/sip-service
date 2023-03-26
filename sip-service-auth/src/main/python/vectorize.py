@@ -43,7 +43,7 @@ def vectorize(url):
     colors = {
         'white': 1.0,
     }
-    for image_name in ['src/main/python/images/outputs/output_water.tiff']:
+    for image_name in ['images/outputs/output_water.tiff']:
         image = rasterio.open(path + image_name, 'r')
         im_arr = np.asarray(image.read()).transpose((1, 2, 0))
 
@@ -67,3 +67,5 @@ def vectorize(url):
 
             mp = shapely.MultiPolygon(polygons)
             return save_gj(url, path, mp, image_name.split('.')[0] + '_' + list(colors.keys())[i])
+
+vectorize("")

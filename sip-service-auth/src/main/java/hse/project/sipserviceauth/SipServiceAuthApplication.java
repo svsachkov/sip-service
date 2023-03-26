@@ -77,14 +77,17 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
 
                 Order order = orders.peek();
                 String order_url = order.getUrl();
+                String order_url2 = order.getUrl2();
                 String order_id = order.getId().toString();
                 String param_url = "\"" + order_url + "\"";
+                String param_url2 = "\"" + order_url2 + "\"";
 
                 try {
                     ProcessBuilder pb = new ProcessBuilder(
                             "python",
                             "src/main/python/main.py",
                             param_url,
+                            param_url2,
                             order_id
                     );
                     pb.redirectErrorStream(true);

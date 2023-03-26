@@ -14,4 +14,6 @@ public class OrderRequest {
     private String url;
 
     private String model;
+
+    private String url2;
 }

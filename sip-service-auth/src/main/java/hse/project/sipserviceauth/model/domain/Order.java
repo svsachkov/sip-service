@@ -44,6 +44,10 @@ public class Order {
     @Column(length = 1000000)
     private String bbox;
 
+    private String url2;
+
+    private String result2;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     @ToString.Exclude
