@@ -238,11 +238,16 @@
                 <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
             </div>
             <div id="overlay" class="overlay">
-                <div id="mouse-position"></div>
-                <div id="mouse-position2"></div>
+                <div>EPGS:4326
+                    <div id="mouse-position"></div>
+                </div>
+                <div>EPGS:3857
+                    <div id="mouse-position2"></div>
+                </div>
+
                 <form>
-                    <label for="projection">Projection </label>
-                    <select id="projection">
+                    <label for="projection" style="visibility: hidden;">Projection </label>
+                    <select id="projection" style="visibility: hidden;">
                         <option value="EPSG:3857">EPSG:3857</option>
                         <!--TODO багованые переводы между проекциями-->
                         <!--                    <option value="EPSG:4326">EPSG:4326</option>-->
