@@ -571,6 +571,11 @@ function showAccountPage() {
     $('#workbench_page').hide()
     $('#account_page').show()
 }
+
+function clearLocalStorage() {
+    localStorage.clear()
+}
+
 function clearLoginPage() {
     document.getElementById("logLogin").value = ''
     document.getElementById("logPwd").value = ''
@@ -609,8 +614,8 @@ function validateLoginForm() {
     return !(usernameInvalid || passwordInvalid);
 }
 
-document.getElementById("to_login_page").addEventListener('click', function () {
-    localStorage.removeItem("Token")
+document.getElementById("logOut").addEventListener('click', function () {
+    clearLocalStorage()
     showLoginPage()
 });
 
@@ -725,11 +730,23 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
 });
 
 
-document.getElementById("deleteAccount").addEventListener('click', function () {
-    localStorage.removeItem("Token")
-    console.log("Token REMOVED")
-    // app.msg = ''
-    showLoginPage()
+document.getElementById("deleteAccount").addEventListener('click', async function () {
+    const url_ = 'http://localhost:8000/me'
+    const token = localStorage.getItem("Token")
+
+    let response = await fetch(url_, {
+        method: "DELETE",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+    })
+
+    if (response.ok) {
+        console.log("Token REMOVED")
+        clearLocalStorage()
+        // app.msg = ''
+        showLoginPage()
+    } else {
+
+    }
 });
 
 function updateOrders() {
