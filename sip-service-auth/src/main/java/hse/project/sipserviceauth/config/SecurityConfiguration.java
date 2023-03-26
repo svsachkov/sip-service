@@ -28,6 +28,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors()
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/login", "/register").permitAll()
                 .anyRequest().authenticated()

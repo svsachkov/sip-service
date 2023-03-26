@@ -6,6 +6,7 @@ import hse.project.sipserviceauth.model.request.UserRequest;
 import hse.project.sipserviceauth.model.response.CreateResponse;
 import hse.project.sipserviceauth.model.response.DeleteResponse;
 import hse.project.sipserviceauth.model.response.UpdateResponse;
+import hse.project.sipserviceauth.repository.TokenRepository;
 import hse.project.sipserviceauth.repository.UserRepository;
 import hse.project.sipserviceauth.service.CrudService;
 
@@ -24,6 +25,7 @@ public class UserService implements CrudService<User, UserRequest> {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     @Override
     public CreateResponse<User> create(UserRequest userRequest) throws ApiRequestException {
@@ -61,7 +63,7 @@ public class UserService implements CrudService<User, UserRequest> {
     public DeleteResponse<User> deleteById(UUID userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
-            return new DeleteResponse<>("Order deleted!", userId);
+            return new DeleteResponse<>("User deleted!", userId);
         }
 
         return null;

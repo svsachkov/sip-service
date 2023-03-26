@@ -52,6 +52,16 @@ public class User implements UserDetails {
     @ToString.Exclude
     private List<Order> orders = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "user",
+            orphanRemoval = true
+    )
+    @ToString.Exclude
+    private List<Token> tokens = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

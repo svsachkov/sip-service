@@ -5,6 +5,8 @@ import hse.project.sipserviceauth.model.domain.Order;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,7 +19,26 @@ import java.util.UUID;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class SipServiceAuthApplication {
+public class SipServiceAuthApplication implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(
+                        "http://127.0.0.1:5173",
+                        "http://localhost:5173",
+                        "https://127.0.0.1:5173",
+                        "https://localhost:5173"
+                )
+                .allowedMethods(
+                        "GET",
+                        "PUT",
+                        "POST",
+                        "DELETE",
+                        "PATCH",
+                        "OPTIONS"
+                );
+    }
 
     // Queue of orders that have NOT been processed yet
     public static Queue<Order> orders = new LinkedList<>();
