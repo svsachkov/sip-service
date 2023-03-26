@@ -785,10 +785,11 @@ function getOrders(cOrders, fOrders) {
 Vue.component('order-row', {
     props: ['order', 'isReady'],
     template: '<div class="customCard">' +
-        '<div><i>ID: {{order.id}}</i></div>' +
+        // '<div><i>ID: {{order.id}}</i></div>' +
+        '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
+        '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
         '<div>Created: {{order.createdAt}}</div>' +
         '<div>Finised: {{order.finishedAt}}</div>' +
-        '<div>Status: {{order.status}}</div>' +
         '<div><button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button></div>' +
         '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
         '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div></div>',
