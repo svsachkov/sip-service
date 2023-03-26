@@ -17,35 +17,145 @@
 </head>
 <body>
 <h1 hidden="hidden">Home page</h1>
-<span id="app">Сообщение: {{ msg }}</span>
 <!--<div id="app"></div>-->
-<div class="register_page" id="register_page">
-    <div class="regHeader" id="regHeader">Создать аккант</div>
-    <div class="regInfo" id="regInfo">Чтобы просматривать заказы, войдите в аккаунт или создайте его</div>
-    <form>
-        <input required id="regLogin" type="text" placeholder="Логин"/>
-        <input required id="regPwd" type="password" placeholder="Придумайте пароль"/>
-        <input id="repeatPwd" type="password" placeholder="Повторите пароль"/>
-        <input id="surname" type="text" placeholder="Фамилия"/>
-        <input id="name" type="text" placeholder="Имя"/>
-        <input id="patronymic" type="text" placeholder="Отчество"/>
-        <input id="regSubmit" type="button" value="Зарегитрироваться">
-    </form>
-    <span>Уже есть аккаунт? <a id="to_login_page_from_reg">Войти</a></span>
+<div class="login_page" id="login_page">
+    <section class="vh-100" style="background-color: #eee0;">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px; background: rgba(200,200,200,0)">
+                        <div class="card-body p-md-5">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Войти в аккаунт</p>
+                                    <p class="text-center h6 mb-5 mx-1 mx-md-4 mt-4">
+                                        Чтобы просматривать заказы, войдите в аккаунт или создайте его
+                                    </p>
+
+                                    <form id="loginForm" class="mx-1 mx-md-4">
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="logLogin" class="form-control" placeholder="логин"/>
+                                                                      <label id="logLoginError" class="form-label" for="logLogin" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-2">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="password" id="logPwd" class="form-control" placeholder="пароль"/>
+                                                                      <label id="logPwdError" class="form-label" for="logPwd" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                            <button id="logSubmit" type="button" class="btn btn-primary btn-lg">Войти</button>
+                                        </div>
+
+                                        <p class="text-center text-muted mt-1 mb-0">Вы здесь впервые?
+                                            <a id="to_register_page_from_log" class="fw-bold text-body" style="cursor: pointer;"><u style="color: blue">Зарегистрироваться</u></a>
+                                        </p>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<div class="login_page" id="login_page">
-    <div class="regHeader" id="logHeader">Войти в аккаунт</div>
-    <div class="regInfo" id="logInfo">Чтобы просматривать заказы, войдите в аккаунт или создайте его</div>
-    <form>
-        <input required id="logLogin" type="text" placeholder="Логин"/>
-        <input required id="logPwd" type="password" placeholder="Пароль"/>
-        <input id="logSubmit" type="button" value="Войти">
-    </form>
-    <span>Вы здесь впервые?<a id="to_register_page_from_log">Зарегистироваться</a></span>
+<div class="register_page" id="register_page">
+    <section class="vh-100" style="background-color: #eee0;">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px; background: rgba(200,200,200,0)">
+                        <div class="card-body p-md-5">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Создать аккаунт</p>
+                                    <p class="text-center h6 mb-5 mx-1 mx-md-4 mt-4">
+                                        Чтобы просматривать заказы, войдите в аккаунт или создайте его
+                                    </p>
+
+                                    <form class="mx-1 mx-md-4">
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="regLogin" class="form-control" placeholder="логин*" />
+                                                <label id="regLoginError" class="form-label" for="regLogin" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="password" id="regPwd" class="form-control" placeholder="пароль*"/>
+                                                <label id="regPwdError" class="form-label" for="regPwd" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="password" id="repeatPwd" class="form-control" placeholder="повтор пароля*"/>
+                                                <label id="regRepeatPwdError" class="form-label" for="repeatPwd" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="surname" class="form-control" placeholder="фамилия"/>
+                                                <label id="regSurnameError" class="form-label" for="surname" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="name" class="form-control" placeholder="имя"/>
+                                                <label id="regNameError" class="form-label" for="name" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="patronymic" class="form-control" placeholder="отчество"/>
+                                                <label id="regPatronymicError" class="form-label" for="patronymic" style="color: red; visibility: hidden; font-size: 80%">Error</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                            <button id="regSubmit" type="button" class="btn btn-primary btn-lg">Зарегистрироваться</button>
+                                        </div>
+
+                                        <p class="text-center text-muted mt-1 mb-0">Уже есть аккаунт?
+                                            <a id="to_login_page_from_reg" class="fw-bold text-body" style="cursor: pointer;"><u style="color: blue">Войти</u></a>
+                                        </p>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 <div class="workbench_page" id="workbench_page">
+    <span id="app">Сообщение: {{ msg }}</span>
     <div id="controls">
         <div id="info"></div>
         <div class="row">
@@ -105,30 +215,111 @@
     </div>
 </div>
 
-<div hidden="hidden" class="account_page" id="account_page">
-    <div class="accHeader" id="accHeader">Профиль пользователя</div>
-    <div class="accInfo" id="accInfo">Вы можете изменить данные: просто введите новые значения в нужные поля и нажмите
-        сохранить
-    </div>
-    <form>
-        <input required id="login" type="text" placeholder="Логин"/>
-        <input required id="currPwd" type="password" placeholder="Текущий пароль"/>
-        <input id="newPwd" type="password" placeholder="Новый пароль"/>
-        <input id="newSurname" type="text" placeholder="Фамилия"/>
-        <input id="newName" type="text" placeholder="Имя"/>
-        <input id="newPatronymic" type="text" placeholder="Отчество"/>
-        <input id="newSubmit" type="submit" value="Сохранить">
-    </form>
-    <a class="to_delete_acc_page" id="to_delete_acc_page">Удалить</a>
-    <button class="to_workbench_page" type="button" id="to_workbench_page"><span>Вернуться на сайт</span></button>
-    <button class="to_login_page" type="button" id="to_login_page"><span>Выйти</span></button>
-</div>
+<div class="account_page" id="account_page">
 
-<div class="delete_acc_page" id="delete_acc_page">
-    <div class="deleteHeader" id="deleteHeader">Удалить аккаунт</div>
-    <div class="deleteInfo" id="deleteInfo">Вы действительно хотите удалить аккаунт?</div>
-    <button class="to_register_page" type="button" id="to_register_page"><span>Удалить</span></button>
-    <button class="to_account_page" type="button" id="to_account_page"><span>Отменить</span></button>
+    <!-- Модальное окно -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Удалить аккаунт?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    Это действие нельзя отменить. Вы уверены, что хотите удалить свой аккаунт навсегда?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="deleteAccount">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="vh-100" style="background-color: #eee0;">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px; background: rgba(200,200,200,0)">
+                        <div class="card-body p-md-5">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Аккаунт</p>
+                                    <p class="text-center h6 mb-5 mx-1 mx-md-4 mt-4">
+                                        Вы можете изменить данные: просто введите новые значения в нужные поля и нажмите сохранить
+                                    </p>
+
+                                    <form class="mx-1 mx-md-4">
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="login" class="form-control" placeholder="логин*" />
+                                                <!--                      <label class="form-label" for="form3Example1c">Your Name</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="password" id="currPwd" class="form-control" placeholder="текущий пароль*"/>
+                                                <!--                      <label class="form-label" for="form3Example3c">Your Email</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="password" id="newPwd" class="form-control" placeholder="новый пароля*"/>
+                                                <!--                      <label class="form-label" for="form3Example3c">Your Email</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="newSurname" class="form-control" placeholder="фамилия"/>
+                                                <!--                      <label class="form-label" for="form3Example4c">Password</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="newName" class="form-control" placeholder="имя"/>
+                                                <!--                      <label class="form-label" for="form3Example4c">Password</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input type="text" id="newPatronymic" class="form-control" placeholder="отчество"/>
+                                                <!--                      <label class="form-label" for="form3Example4c">Password</label>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                            <button id="to_workbench_page" type="button" class="btn btn-primary btn-lg">Вернуться на сайт</button>
+                                            <button id="newSubmit" type="button" class="btn btn-primary btn-lg">Сохранить</button>
+                                            <button id="to_login_page" type="button" class="btn btn-primary btn-lg">Выйти</button>
+                                        </div>
+
+                                        <p class="text-center text-muted mt-1 mb-0">
+                                            <a id="to_delete_acc_page" data-bs-toggle="modal" data-bs-target="#exampleModal" class="fw-bold text-body" style="cursor: pointer;"><u style="color: red">Удалить аккаунт</u></a>
+                                        </p>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 <script type="module" src="/main.js"></script>
