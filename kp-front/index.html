@@ -17,7 +17,7 @@
         }
 
         .sidebar {
-            height: 95vh;
+            height: 90vh;
             float: right;
             width: 20vw;
         }
@@ -30,8 +30,7 @@
             border: 1px solid black;
             margin: 10px auto;
             padding: 10px 3px;
-            /*setting width for each and every card element as well as -10px for removing the margin width for 5 elements*/
-            width: 50%;
+            width: 80%;
             align-items: center;
             text-align: center;
         }
@@ -204,13 +203,14 @@
 
 <div class="workbench_page" id="workbench_page">
     <div id="wrapper">
-        <button class="btn bg-transparent" type="button" id="to_acc_page"
-                style="position: absolute; margin: 10px;border: 2px black dashed"><span>Аккаунт</span></button>
-        <!--        <span id="app"></span>-->
-        <div id="controls">
-            <div id="info"></div>
-            <div class="row">
-                <div class="col-auto">
+        <div style="position: absolute;z-index: 2">
+            <button class="btn bg-transparent" type="button" id="to_acc_page"
+                     style="margin: 10px; border: 2px black dashed;"><span>Аккаунт</span></button>
+            <!--        <span id="app"></span>-->
+            <div id="controls">
+                <div id="info"></div>
+                <div class="row">
+                    <div class="col-auto">
             <span class="input-group">
               <label class="input-group-text" for="shapeType">Geometry type:</label>
               <select class="form-select" id="shapeType">
@@ -226,15 +226,17 @@
               <input class="form-control" type="button" value="Abort" id="abort">
               <input class="form-control" type="button" value="Clear All" id="clear">
             </span>
-                    <button class="exportBtn" type="button" id="exportBtn"><span>Get JSON Features</span></button>
-                    <button class="exportBtn" type="button" id="clearBtnL"><span>Clear JSON Layers</span></button>
-                    <button class="exportBtn" type="button" id="exportBtnL"><span>Get JSON Layers</span></button>
+                        <button class="exportBtn" type="button" id="exportBtn"><span>Get JSON Features</span></button>
+                        <button class="exportBtn" type="button" id="clearBtnL"><span>Clear JSON Layers</span></button>
+                        <button class="exportBtn" type="button" id="exportBtnL"><span>Get JSON Layers</span></button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="canvas" class="canvas">
-            <div id="map" class="map"></div>
+            <div class="orders_list" id="orders_list">
+                <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
+                <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
+            </div>
             <div id="overlay" class="overlay">
                 <div id="mouse-position"></div>
                 <div id="mouse-position2"></div>
@@ -258,12 +260,14 @@
             </div>
         </div>
 
-        <div class="orders_list" id="orders_list">
-            <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
-            <button class="StepaBtn" type="button" id="StepaBtn"><span>BTN</span></button>
+
+        <div id="canvas" class="canvas" style="width: 80vw; height: 100vh">
+            <div id="map" class="map" style="width: 100%; height: 100%"></div>
         </div>
+
+
     </div>
-    <p style="text-align: center"><strong>Ваши заказы</strong></p>
+    <p style="text-align: center; margin-bottom: -15px;"><strong>Ваши заказы</strong></p>
     <hr/>
     <div class="sidebar" style="overflow-y: scroll;">
         <div id="app">

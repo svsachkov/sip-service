@@ -784,7 +784,14 @@ function getOrders(cOrders, fOrders) {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div class="customCard"><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div>',
+    template: '<div class="customCard">' +
+        '<div><i>ID: {{order.id}}</i></div>' +
+        '<div>Created: {{order.createdAt}}</div>' +
+        '<div>Finised: {{order.finishedAt}}</div>' +
+        '<div>Status: {{order.status}}</div>' +
+        '<div><button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button></div>' +
+        '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
+        '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div></div>',
     methods: {
         hideImage() {
             var lst = [];
@@ -886,9 +893,9 @@ Vue.component('orders-list', {
         }
     },
     template: '<div>' +
-        'СОЗДАННЫЕ <order-row v-for="order in cOrders" :key="order.id" :order="order" :isReady="false"/>' +
+        '<order-row v-for="order in cOrders" :key="order.id" :order="order" :isReady="false"/>' +
         '<p></p>' +
-        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order" :isReady="true"/>' +
+        '<order-row v-for="order in fOrders" :key="order.id" :order="order" :isReady="true"/>' +
         '</div>',
     created: function () {
         getOrders(this.cOrders, this.fOrders)
