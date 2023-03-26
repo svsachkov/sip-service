@@ -784,8 +784,7 @@ function getOrders(cOrders, fOrders) {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button><span>' +
-        '</span></div>',
+    template: '<div class="customCard"><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div>',
     methods: {
         hideImage() {
             var lst = [];
