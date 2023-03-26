@@ -539,21 +539,98 @@ viewProjSelect.addEventListener('change', onChangeProjection);
 // `
 
 
-
-
-
-
-
-
-
-
-
-
 // ----------------------------------------------------------------------
 const url = 'http://localhost:8000'
+
 // var orderApi = Vue.resource('http://localhost:8000/v1/order')
 
-document.getElementById("regSubmit").addEventListener('click', function () {
+function showRegisterPage() {
+    $('#register_page').show()
+    $('#login_page').hide()
+    $('#workbench_page').hide()
+    $('#account_page').hide()
+}
+
+function showLoginPage() {
+    $('#register_page').hide()
+    $('#login_page').show()
+    $('#workbench_page').hide()
+    $('#account_page').hide()
+}
+
+function showMainPage() {
+    $('#register_page').hide()
+    $('#login_page').hide()
+    $('#workbench_page').show()
+    $('#account_page').hide()
+}
+
+function showAccountPage() {
+    $('#register_page').hide()
+    $('#login_page').hide()
+    $('#workbench_page').hide()
+    $('#account_page').show()
+}
+function clearLoginPage() {
+    document.getElementById("logLogin").value = ''
+    document.getElementById("logPwd").value = ''
+    document.getElementById("logLogin").style.borderColor = ''
+    document.getElementById("logPwd").style.borderColor = ''
+}
+
+function validateLoginForm() {
+    const username = document.getElementById("logLogin");
+    const password = document.getElementById("logPwd");
+    const logError = document.getElementById("logLoginError");
+    const pwdError = document.getElementById("logPwdError");
+    var usernameInvalid = false
+    var passwordInvalid = false
+
+    if (username.value === '') {
+        username.style.borderColor = 'red'
+        usernameInvalid = true
+        logError.style.visibility = "visible";
+        logError.textContent = "Поле 'Логин' не должно быть пустым"
+    } else {
+        username.style.borderColor = 'green'
+        logError.style.visibility = "hidden";
+    }
+
+    if (password.value === '') {
+        password.style.borderColor = 'red'
+        passwordInvalid = true
+        pwdError.style.visibility = "visible";
+        pwdError.textContent = "Поле 'Пароль' не должно быть пустым"
+    } else {
+        password.style.borderColor = 'green'
+        pwdError.style.visibility = "hidden";
+    }
+
+    return !(usernameInvalid || passwordInvalid);
+}
+
+document.getElementById("to_login_page").addEventListener('click', function () {
+    localStorage.removeItem("Token")
+    showLoginPage()
+});
+
+document.getElementById("to_workbench_page").addEventListener('click', function () {
+    showMainPage()
+});
+
+document.getElementById("to_acc_page").addEventListener('click', function () {
+    showAccountPage()
+});
+
+document.getElementById("to_register_page_from_log").addEventListener('click', function () {
+    showRegisterPage()
+});
+
+document.getElementById("to_login_page_from_reg").addEventListener('click', function () {
+    showLoginPage()
+});
+
+document.getElementById("regSubmit").addEventListener('click', async function () {
     console.log("reg")
     const username = document.getElementById("regLogin").value.toString();
     const password = document.getElementById("regPwd").value.toString();
@@ -563,7 +640,7 @@ document.getElementById("regSubmit").addEventListener('click', function () {
     const patronymic = document.getElementById("patronymic").value.toString();
 
     const url_ = 'http://localhost:8000/register'
-    fetch(url_, {
+    let response = await fetch(url_, {
         method: "POST",
         headers: {"Accept": 'application/json', "Content-type": 'application/json'},
         body: JSON.stringify({
@@ -573,31 +650,45 @@ document.getElementById("regSubmit").addEventListener('click', function () {
             "surname": surname,
             "patronymic": patronymic
         })
-    }).then(response => response.json()).then(console.log)
+    })
+
+    if (response.ok) {
+        response = await response.json()
+        console.log(response)
+        showLoginPage()
+    }
 });
 
-document.getElementById("logSubmit").addEventListener('click', function () {
-    const username = document.getElementById("logLogin").value.toString();
-    const password = document.getElementById("logPwd").value.toString();
+document.getElementById("logSubmit").addEventListener('click', async function () {
+    if (validateLoginForm()) {
+        const username = document.getElementById("logLogin").value.toString();
+        const password = document.getElementById("logPwd").value.toString();
 
-    const url_ = 'http://localhost:8000/login'
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json'},
-        body: JSON.stringify({
-            "username": username,
-            "password": password
+        const url_ = 'http://localhost:8000/login'
+        let response = await fetch(url_, {
+            method: "POST",
+            headers: {"Accept": 'application/json', "Content-type": 'application/json'},
+            body: JSON.stringify({
+                "username": username,
+                "password": password
+            })
         })
-    }).then(response => response.json()).then(
-        function (response) {
+
+        if (response.ok) {
+            response = await response.json()
             localStorage.setItem('Token', "Bearer " + response["token"])
             console.log(response)
             app.msg = localStorage.getItem("Token")
+            clearLoginPage()
+            showMainPage()
+            updateOrders()
+        } else {
+
         }
-    )
+    }
 });
 
-const interval = setInterval(function() {
+const interval = setInterval(function () {
     const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
@@ -634,10 +725,11 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
 });
 
 
-document.getElementById("to_register_page").addEventListener('click', function () {
+document.getElementById("deleteAccount").addEventListener('click', function () {
     localStorage.removeItem("Token")
     console.log("Token REMOVED")
-    app.msg = ''
+    // app.msg = ''
+    showLoginPage()
 });
 
 function updateOrders() {
@@ -675,7 +767,7 @@ function getOrders(cOrders, fOrders) {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="prt(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button><span>' +
+    template: '<div><i>ID: {{order.id}}</i> Created: {{order.createdAt}} Finised: {{order.finishedAt}} Status: {{order.status}} <button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button><span>' +
         '</span></div>',
     methods: {
         hideImage() {
@@ -700,14 +792,11 @@ Vue.component('order-row', {
                 }
             }
 
-            console.log(lst)
             map.setLayers(lst)
-
 
             var features = source.getFeatures();
             var wktRepresenation;
             var Bound;
-            // console.log(features);
             if (features.length === 0) {
                 console.log('no shapes');
                 Bound = bbox;
@@ -723,8 +812,6 @@ Vue.component('order-row', {
                     wktRepresenation = format.writeGeometry(olGeom._geomFact);
                     Bound = olProj.transformExtent(olGeom._geomFact.getExtent(), projection.value, projection.value);
                 }
-                // console.log(Bound);
-                // console.log(wktRepresenation);
             }
 
             my_str = res.replace('tiff', 'jpeg')
@@ -741,24 +828,18 @@ Vue.component('order-row', {
             console.log("<>", map.getLayers())
             source.clear();
         },
-        prt(res) {
-            console.log('STARTED')
+        showResult(res) {
             console.log(JSON.parse(res).features)
-            // console.log([new Feature(JSON.parse(res).features[0])])
             var coords = JSON.parse(res).features[0].geometry.coordinates
 
             const feature = new Feature({
                 geometry: new MultiPolygon(coords)
             });
 
-            console.log(feature)
-
             const vectorSource = new VectorSource({
                 features: [feature],
             });
 
-
-            console.log(vectorSource)
             lst.push(vectorSource)
 
             var lst_clear = [];
@@ -777,32 +858,6 @@ Vue.component('order-row', {
                 })
             );
             map.getView().fit(vectorSource.getExtent());
-            console.log("END")
-
-
-
-            // console.log(res)
-            // if (dragAndDropInteraction) {
-            //     map.removeInteraction(dragAndDropInteraction);
-            //     console.log("PRT IF")
-            // }
-            // dragAndDropInteraction = new DragAndDrop({
-            //     formatConstructors: [
-            //         // GPX,
-            //         GeoJSON,
-            //         // IGC,
-            //         // use constructed format to set options
-            //         // new KML({extractStyles: extractStyles.checked}),
-            //         // TopoJSON,
-            //     ],
-            // });
-            // console.log("BEFORE ADD FEATURES")
-            // dragAndDropInteraction.on('addfeatures', function (res) {
-            //
-            //
-            // });
-            // map.addInteraction(dragAndDropInteraction);
-            // console.log("FINISH")
         }
     }
 });
@@ -817,7 +872,7 @@ Vue.component('orders-list', {
     template: '<div>' +
         'СОЗДАННЫЕ <order-row v-for="order in cOrders" :key="order.id" :order="order" :isReady="false"/>' +
         '<p></p>' +
-        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order":isReady="true"/>' +
+        'ГОТОВЫЕ <order-row v-for="order in fOrders" :key="order.id" :order="order" :isReady="true"/>' +
         '</div>',
     created: function () {
         getOrders(this.cOrders, this.fOrders)
@@ -832,20 +887,22 @@ var app = new Vue({
         createdOrders: [],
         finishedOrders: []
     },
-    created: function() {
+    created: function () {
         console.log("CREATED")
         if (localStorage.getItem("Token") == null) {
-            $('#register_page').hide()
+            showLoginPage()
+        } else {
+            showMainPage()
         }
     },
     watch: {
         msg(newValue, oldValue) {
             console.log("WATCH", newValue, oldValue)
-            if (localStorage.getItem("Token") != null) {
-                $('#register_page').show()
-            } else {
-                $('#register_page').hide()
-            }
+            // if (localStorage.getItem("Token") != null) {
+            //     $('#register_page').show()
+            // } else {
+            //     $('#register_page').hide()
+            // }
 
         }
     }
