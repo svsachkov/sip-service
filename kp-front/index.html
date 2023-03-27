@@ -17,7 +17,7 @@
         }
 
         .sidebar {
-            height: 90vh;
+            height: 85vh;
             float: right;
             width: 20vw;
         }
@@ -277,12 +277,19 @@
 
 
     </div>
-    <p style="text-align: center; margin-bottom: -15px;"><strong>Ваши заказы</strong></p>
-    <hr/>
-    <div class="sidebar" style="overflow-y: scroll;">
-        <div id="app">
+    <div style="float: right; text-align: center;">
+        <p style="text-align: center; margin-bottom: -15px;"><strong>Ваши заказы</strong></p>
+        <hr/>
+        <div class="sidebar" style="overflow-y: scroll;">
+            <div id="app">
 
+            </div>
         </div>
+        <hr/>
+    </div>
+    <div style="float: right; text-align: center; width: 20vw;">
+        <hr/>
+        <button id="createNewOrder" style="margin-top: -10px; left: 50%;" class="btn btn-primary btn-rounded">Создать заказ</button>
     </div>
 </div>
 
@@ -431,14 +438,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script>
-    $( function() {
-        $( "#startDatepicker" ).datepicker();
-    } );
+    $(function () {
+        $("#startDatepicker").datepicker();
+    });
 </script>
 <script>
-    $( function() {
-        $( "#finishDatepicker" ).datepicker();
-    } );
+    $(function () {
+        $("#finishDatepicker").datepicker();
+    });
 </script>
 </body>
 </html>

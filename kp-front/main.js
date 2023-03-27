@@ -48,6 +48,7 @@ import Feature from "./node_modules/ol/Feature.js";
 
 import MultiPolygon from './node_modules/ol/geom/MultiPolygon.js';
 import {Extent} from "ol/interaction.js";
+import {or} from "ol/format/filter.js";
 
 const key = '4Z4vZj5CICocrdP4mCFb';
 const attributions =
@@ -775,6 +776,11 @@ document.getElementById("deleteAccount").addEventListener('click', async functio
     }
 });
 
+document.getElementById("createNewOrder").addEventListener('click', function () {
+    app.orders.push(1)
+    document.getElementById("createNewOrder").disabled = true
+})
+
 function updateOrders() {
     console.log("UPDATE ORDERS")
     const url_ = 'http://localhost:8000/orders'
@@ -808,18 +814,49 @@ function getOrders(cOrders, fOrders) {
 }
 
 
+Vue.component('order-card-row', {
+    props: ['order'],
+    template: '<div v-if="order[0] == 1" class="customCard">Создание заказа' +
+        '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div></div>',
+    methods: {
+        deleteEmptyOrder() {
+            app.orders = []
+            document.getElementById("createNewOrder").disabled = false
+        }
+    }
+})
+
 Vue.component('order-row', {
     props: ['order', 'isReady'],
     template: '<div class="customCard">' +
-        // '<div><i>ID: {{order.id}}</i></div>' +
         '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
         '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
-        '<div>Created: {{new Date(order.createdAt).toLocaleString()}}</div>' +
-        '<div>Finised: {{new Date(order.finishedAt).toLocaleString()}}</div>' +
+        '<div>Создан: {{new Date(order.createdAt).toLocaleString("ru-RU")}}</div>' +
+        '<div v-if="order.status === true"><div>Завершен: {{new Date(order.finishedAt).toLocaleString("ru-RU")}}</div></div>' +
         '<div><button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button></div>' +
         '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
-        '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div></div>',
+        '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div>' +
+        '<div><button @click="deleteOrder(order)" class="btn btn-danger">Удалить заказ</button></div></div>',
     methods: {
+        deleteOrder(order) {
+            const url_ = 'http://localhost:8000/orders?order_id=' + order.id
+            const token = localStorage.getItem("Token")
+
+            fetch(url_, {
+                method: "DELETE",
+                headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
+            }).then(response => response.json())
+
+            var index = app.createdOrders.indexOf(order);
+            if (index !== -1) {
+                app.createdOrders.splice(index, 1);
+            }
+
+            var index2 = app.finishedOrders.indexOf(order);
+            if (index2 !== -1) {
+                app.finishedOrders.splice(index2, 1);
+            }
+        },
         hideImage() {
             var lst = [];
             for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
@@ -913,13 +950,15 @@ Vue.component('order-row', {
 });
 
 Vue.component('orders-list', {
-    props: ['fOrders', 'cOrders'],
+    props: ['orders', 'fOrders', 'cOrders'],
     data: function () {
         return {
             order: null
         }
     },
     template: '<div>' +
+        '<order-card-row :order="orders"/>' +
+        '<p></p>' +
         '<order-row v-for="order in cOrders" :key="order.id" :order="order" :isReady="false"/>' +
         '<p></p>' +
         '<order-row v-for="order in fOrders" :key="order.id" :order="order" :isReady="true"/>' +
@@ -931,9 +970,10 @@ Vue.component('orders-list', {
 
 var app = new Vue({
     el: '#app',
-    template: '<orders-list :fOrders="finishedOrders" :cOrders="createdOrders"/>',
+    template: '<orders-list :orders="orders" :fOrders="finishedOrders" :cOrders="createdOrders"/>',
     data: {
         msg: localStorage.getItem("Token"),
+        orders: [],
         createdOrders: [],
         finishedOrders: []
     },
