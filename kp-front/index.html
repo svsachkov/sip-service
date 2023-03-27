@@ -30,8 +30,32 @@
             border: 1px solid black;
             margin: 10px auto;
             padding: 10px 3px;
-            width: 80%;
+            width: 90%;
             align-items: center;
+            text-align: center;
+        }
+        .btn-circle.btn-sm {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            font-size: 8px;
+            text-align: center;
+        }
+        .btn-circle.btn-md {
+            width: 50px;
+            height: 50px;
+            padding: 7px 10px;
+            border-radius: 25px;
+            font-size: 10px;
+            text-align: center;
+        }
+        .btn-circle.btn-xl {
+            width: 70px;
+            height: 70px;
+            padding: 10px 16px;
+            border-radius: 35px;
+            font-size: 12px;
             text-align: center;
         }
     </style>
@@ -215,16 +239,16 @@
                 <div class="row">
                     <div class="col-auto">
             <span class="input-group">
-              <label class="input-group-text" for="shapeType">Geometry type:</label>
-              <select class="form-select" id="shapeType">
-                  <option value="None">None</option>
-                  <option value="Polygon">Polygon</option>
-                  <option value="Box">Box</option>
-                  <!--              <option value="Point">Point</option>-->
-                  <!--              <option value="LineString">LineString</option>-->
-                  <!--              <option value="Square">Square</option>-->
-                  <!--              <option value="Circle">Circle</option>-->
-              </select>
+<!--              <label class="input-group-text" for="shapeType">Geometry type:</label>-->
+<!--              <select class="form-select" id="shapeType">-->
+<!--                  <option value="None">None</option>-->
+<!--                  <option value="Polygon">Polygon</option>-->
+<!--                  <option value="Box">Box</option>-->
+<!--                  &lt;!&ndash;              <option value="Point">Point</option>&ndash;&gt;-->
+<!--                  &lt;!&ndash;              <option value="LineString">LineString</option>&ndash;&gt;-->
+<!--                  &lt;!&ndash;              <option value="Square">Square</option>&ndash;&gt;-->
+<!--                  &lt;!&ndash;              <option value="Circle">Circle</option>&ndash;&gt;-->
+<!--              </select>-->
               <input class="form-control" type="button" value="Undo" id="undo">
               <input class="form-control" type="button" value="Abort" id="abort">
               <input class="form-control" type="button" value="Clear All" id="clear">
@@ -237,8 +261,8 @@
             </div>
 
             <div class="orders_list" id="orders_list">
-                <p>Start date: <input type="text" id="startDatepicker"></p>
-                <p>Finish date: <input type="text" id="finishDatepicker"></p>
+<!--                <p>Start date: <input type="text" id="startDatepicker"></p>-->
+<!--                <p>Finish date: <input type="text" id="finishDatepicker"></p>-->
                 <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
                 <button class="searchBtn2" type="button" id="imgSearchBtn2"><span>GET IMAGE 2</span></button>
                 <button class="StepaBtn" type="button" id="StepaBtn"><span>CREATE ORDER</span></button>
@@ -438,15 +462,15 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-    $(function () {
-        $("#startDatepicker").datepicker();
-    });
-</script>
-<script>
-    $(function () {
-        $("#finishDatepicker").datepicker();
-    });
-</script>
+<!--<script>-->
+<!--    $(function () {-->
+<!--        $("#startDatepicker").datepicker();-->
+<!--    });-->
+<!--</script>-->
+<!--<script>-->
+<!--    $(function () {-->
+<!--        $("#finishDatepicker").datepicker();-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

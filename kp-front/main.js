@@ -69,7 +69,7 @@ const scaleControl = new ScaleLine({
     minWidth: 100,
     maxWidth: 150,
 });
-const shapeSelect = document.getElementById('shapeType');
+// const shapeSelect = document.getElementById('shapeType');
 
 const source = new VectorSource({wrapX: false});
 const vector = new VectorLayer({
@@ -530,43 +530,43 @@ map.addInteraction(modify);
 
 let draw, snap; // global so we can remove them later
 
-function addInteractions() {
-    let val = shapeSelect.value;
-    if (val !== 'None') {
-        let geometryFunction;
-        if (val === 'Box') {
-            val = 'Circle';
-            geometryFunction = createBox();
-        }
-        draw = new Draw({
-            source: source,
-            type: val,
-            // type: shapeSelect.value,
-            geometryFunction: geometryFunction,
-        });
-        draw.on('drawstart', function (evt) {
-            //... unset sketch
-            source.clear();
-        }, this);
-        // draw.on('drawend', function (evt) {
-        //     //... unset sketch
-        //     map.removeInteraction(draw);
-        // }, this);
-        map.addInteraction(draw);
-        snap = new Snap({source: source});
-        map.addInteraction(snap);
-    }
-}
+// function addInteractions() {
+//     let val = document.getElementById('shapeType').value;
+//     if (val !== 'None') {
+//         let geometryFunction;
+//         if (val === 'Box') {
+//             val = 'Circle';
+//             geometryFunction = createBox();
+//         }
+//         draw = new Draw({
+//             source: source,
+//             type: val,
+//             // type: shapeSelect.value,
+//             geometryFunction: geometryFunction,
+//         });
+//         draw.on('drawstart', function (evt) {
+//             //... unset sketch
+//             source.clear();
+//         }, this);
+//         // draw.on('drawend', function (evt) {
+//         //     //... unset sketch
+//         //     map.removeInteraction(draw);
+//         // }, this);
+//         map.addInteraction(draw);
+//         snap = new Snap({source: source});
+//         map.addInteraction(snap);
+//     }
+// }
 
 /**
  * Handle change event.
  */
-shapeSelect.onchange = function () {
-    map.removeInteraction(draw);
-    map.removeInteraction(snap);
-    addInteractions();
-};
-addInteractions();
+// shapeSelect.onchange = function () {
+//     map.removeInteraction(draw);
+//     map.removeInteraction(snap);
+//     addInteractions();
+// };
+//addInteractions();
 
 function onChangeProjection() { // TODO 24.03
     const currentView = map.getView();
@@ -812,29 +812,7 @@ const interval = setInterval(function () {
 }, 5000);
 
 document.getElementById("StepaBtn").addEventListener('click', function () {
-    const url = localStorage.getItem("url")
-    const url2 = localStorage.getItem("url2")
-    const token = localStorage.getItem("Token")
-
-    const url_ = 'http://localhost:8000/order'
-    fetch(url_, {
-        method: "POST",
-        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
-        body: JSON.stringify({
-            "url": url,
-            "url2": url2,
-            "name": "Order" + Math.random(),
-            "model": "ice",
-            "satellite": "sent-1"
-        })
-    }).then(response => response.json()).then(
-        function (response) {
-            updateOrders()
-        }
-    )
-
-    localStorage.setItem("url", null)
-    localStorage.setItem("url2", null)
+    sendOrder()
 });
 
 
@@ -891,15 +869,319 @@ function getOrders(cOrders, fOrders) {
     })
 }
 
+function sendOrder() {
+    const url = localStorage.getItem("url")
+    const url2 = localStorage.getItem("url2")
+    const token = localStorage.getItem("Token")
+
+    const url_ = 'http://localhost:8000/order'
+    fetch(url_, {
+        method: "POST",
+        headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
+        body: JSON.stringify({
+            "url": url,
+            "url2": url2,
+            "name": "Order" + Math.random(),
+            "model": "ice",
+            "satellite": "sent-1"
+        })
+    }).then(response => response.json()).then(
+        function (response) {
+            updateOrders()
+        }
+    )
+
+    localStorage.setItem("url", null)
+    localStorage.setItem("url2", null)
+}
+
+function getFirstImage(startDate) {
+    if (startDate.length === 0) {
+        startDate = "2020" + "-" + "06" + "-" + "02"
+    } else {
+        startDate = startDate.split('/')
+        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    }
+
+    const date = new Date(startDate);
+    date.setDate(date.getDate() - 15);
+    console.log(date)
+
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (month < 10) {
+        month = "0" + month.toString();
+    }
+    if (day < 10) {
+        day = "0" + day.toString();
+    }
+
+    const startDate0 = [year, month, day].join('-')
+
+    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+
+    map.setLayers(lst)
+
+    var features = source.getFeatures();
+    var wktRepresenation;
+    var Bound;
+    if (features.length === 0) {
+        if (zoneOfInterest.length === 0) {
+            console.log("no shapes");
+        } else {
+            wktRepresenation = varwkt;
+            Bound = varbound;
+
+        }
+    } else {
+        var format = new WKT();
+        var geom = [];
+        if (features.length === 1) {
+            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+            Bound = features[0].getGeometry().getExtent();
+            console.log(Bound)
+
+            zoneOfInterest = features;
+            console.log(zoneOfInterest)
+
+            varwkt = wktRepresenation;
+            varbound = Bound;
+        } else {
+            // TODO: сделать не только для двух полигонов
+            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+            wktRepresenation = format.writeGeometry(olGeom._geomFact);
+            Bound = olGeom._geomFact.getExtent();
+        }
+    }
+
+    // TODO
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    console.log(my_str)
+    localStorage.setItem('url', my_str)
+    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+    var imageLayer = new ImageLayer({
+        source: new ImageStatic({
+            url: my_str,
+            imageExtent: img_ext // east, north, west, south
+        }),
+        zIndex: 0
+    });
+    map.addLayer(imageLayer);
+    source.clear();
+}
+
+function getSecondImage(startDate) {
+    if (startDate.length === 0) {
+        startDate = "2020" + "-" + "06" + "-" + "02"
+    } else {
+        startDate = startDate.split('/')
+        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    }
+
+    const date = new Date(startDate);
+    date.setDate(date.getDate() - 15);
+    console.log(date)
+
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (month < 10) {
+        month = "0" + month.toString();
+    }
+    if (day < 10) {
+        day = "0" + day.toString();
+    }
+
+    const startDate0 = [year, month, day].join('-')
+
+    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+    map.setLayers(lst)
+
+
+    var features = source.getFeatures();
+    var wktRepresenation;
+    var Bound;
+    console.log(features);
+    if (features.length === 0) {
+        if (zoneOfInterest.length === 0) {
+            console.log("no shapes");
+        } else {
+            wktRepresenation = varwkt;
+            Bound = varbound;
+        }
+    } else {
+        var format = new WKT();
+        var geom = [];
+        if (features.length === 1) {
+            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+            Bound = features[0].getGeometry().getExtent();
+            console.log(Bound)
+
+            zoneOfInterest = features;
+            console.log(zoneOfInterest)
+
+            varwkt = wktRepresenation;
+            varbound = Bound;
+        } else {
+            // TODO: сделать не только для двух полигонов
+            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+            wktRepresenation = format.writeGeometry(olGeom._geomFact);
+            Bound = olGeom._geomFact.getExtent();
+        }
+    }
+
+    // TODO
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    localStorage.setItem('url2', my_str)
+    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+    var imageLayer = new ImageLayer({
+        source: new ImageStatic({
+            url: my_str,
+            imageExtent: img_ext // east, north, west, south
+        }),
+        zIndex: 0
+    });
+    map.addLayer(imageLayer);
+    source.clear();
+}
 
 Vue.component('order-card-row', {
     props: ['order'],
-    template: '<div v-if="order[0] == 1" class="customCard">Создание заказа' +
-        '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div></div>',
+    data: function () {
+        return {
+            show_1: false,
+            show_2: false,
+            show_3: false,
+            iceSelected: false
+        }
+    },
+    template:
+        '<div v-if="order[0] == 1" class="customCard"><p>Создание заказа</p>' +
+        '<div style="all:initial;">' +
+            '<div style="margin-left: 12%;"><button @click="show1()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_1==true">-</p><p v-if="show_1==false">+</p></button> <i>Добавить разметку</i></div>' +
+                '<div v-if="show_1 == true">' +
+                    '<label class="input-group-text" for="shapeType">Geometry type:</label>\n' +
+                    '              <select @change="selectArea()" class="form-select" id="shapeType">\n' +
+                    '                  <option value="None">None</option>\n' +
+                    '                  <option value="Polygon">Polygon</option>\n' +
+                    '                  <option value="Box">Box</option>\n' +
+                    '              </select>' +
+                '</div>' +
+            '<div style="margin-left: 12%;"><button @click="show2()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_2==true">-</p><p v-if="show_2==false">+</p></button> <i>Добавить параметры</i></div>' +
+                '<div v-if="show_2 == true">' +
+                    '<div style="align-items: center; text-align: center;">' +
+        '               <label class="input-group-text" for="modelType">Модель:</label>\n' +
+        '               <select @change="selectModel()" class="form-select" id="modelType">\n' +
+        '                   <option value="water">Water</option>\n' +
+        '                   <option value="ice">Ice</option>\n' +
+        '               </select>' +
+        '               <label class="input-group-text" for="satType">Спутник:</label>\n' +
+        '               <select @change="selectSat()" class="form-select" id="satType">\n' +
+        '                   <option value="sent-1">Sentinel-1</option>\n' +
+        '                   <option v-if="iceSelected" value="sent-2">Sentinel-2</option>\n' +
+        '               </select>' +
+        '           </div>' +
+                '</div>' +
+            '<div style="margin-left: 12%;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i>Добавить даты съемки</i></div>' +
+                '<div v-if="show_3 == true"> ' +
+        '           <div style="align-items: center; text-align: center;">' +
+                        '<p>Start date: <input type="date" id="startDatepicker"></p>\n' +
+                        '<p>Finish date: <input type="date" id="finishDatepicker"></p>' +
+        '           </div>' +
+                '</div>' +
+        '</div>' +
+        '<div v-if="show_1 == true && show_2 == true && show_3 == true"><button @click="sendNewOrder()" class="btn btn-success" style="">Отправить заказ</button></div>' +
+        '<div v-if="!(show_1 == true && show_2 == true && show_3 == true)"><button @click="sendNewOrder()" class="btn btn-success" disabled>Отправить заказ</button></div>' +
+        '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div>' +
+        '</div>',
     methods: {
         deleteEmptyOrder() {
             app.orders = []
+            this.show_1 = false;
+            this.show_2 = false;
+            this.show_3 = false;
             document.getElementById("createNewOrder").disabled = false
+
+            document.getElementById('shapeType').value = 'None'
+            map.removeInteraction(draw);
+            map.removeInteraction(snap);
+        },
+        selectModel() {
+            if (document.getElementById("modelType").value === "ice") {
+                this.iceSelected = true
+            }
+        },
+        selectSat() {
+
+        },
+        sendNewOrder() {
+            if (document.getElementById("startDatepicker") != null) {
+                getFirstImage(document.getElementById("startDatepicker").value)
+            }
+            if (document.getElementById("finishDatepicker") != null) {
+                getSecondImage(document.getElementById("finishDatepicker").value)
+            }
+            // sendOrder()
+        },
+        show1() {
+            if (this.show_1 === true) {
+                document.getElementById('shapeType').value = 'None'
+                map.removeInteraction(draw);
+                map.removeInteraction(snap);
+            }
+            this.show_1 = !this.show_1
+        },
+        show2() {
+            this.show_2 = !this.show_2
+        },
+        show3() {
+            this.show_3 = !this.show_3
+        },
+        selectArea() {
+            map.removeInteraction(draw);
+            map.removeInteraction(snap);
+            let val = document.getElementById('shapeType').value;
+            if (val !== 'None') {
+                let geometryFunction;
+                if (val === 'Box') {
+                    val = 'Circle';
+                    geometryFunction = createBox();
+                }
+                draw = new Draw({
+                    source: source,
+                    type: val,
+                    geometryFunction: geometryFunction,
+                });
+                draw.on('drawstart', function (evt) {
+                    source.clear();
+                }, this);
+                map.addInteraction(draw);
+                snap = new Snap({source: source});
+                map.addInteraction(snap);
+            }
         }
     }
 })
