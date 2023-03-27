@@ -1,0 +1,13 @@
+pip install sys
+pip install datetime
+pip install torch
+pip install shapely
+pip install rasterio
+pip install requests
+pip install psycopg2
+pip install warnings
+pip install PIL.Image
+pip install numpy
+pip install geopandas
+pip install albumentations
+pip install segmentation_models_pytorch
