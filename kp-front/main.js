@@ -330,8 +330,13 @@ const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
 const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
-    let startDate = document.getElementById("startDatepicker").value.split('/')
-    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    let startDate = document.getElementById("startDatepicker").value
+    if (startDate.length === 0) {
+        startDate = "2020" + "-" + "06" + "-" + "02"
+    } else {
+        startDate = startDate.split('/')
+        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    }
 
     const date = new Date(startDate);
     date.setDate(date.getDate() - 15);
@@ -427,8 +432,14 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 });
 
 document.getElementById("imgSearchBtn2").addEventListener('click', function () {
-    let startDate = document.getElementById("finishDatepicker").value.split('/')
-    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    let startDate = document.getElementById("finishDatepicker").value
+
+    if (startDate.length === 0) {
+        startDate = "2020" + "-" + "06" + "-" + "02"
+    } else {
+        startDate = startDate.split('/')
+        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    }
 
     const date = new Date(startDate);
     date.setDate(date.getDate() - 15);
@@ -860,8 +871,8 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
             "url": url,
             "url2": url2,
             "name": "Order" + Math.random(),
-            "model": "ice",
-            "satellite": "sent-1"
+            "model": "ice", //"water"
+            "satellite": "sent-1" //"sent-2"
         })
     }).then(response => response.json()).then(
         function (response) {
