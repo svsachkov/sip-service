@@ -812,7 +812,7 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
         body: JSON.stringify({
             "url": url,
             "url2": url2,
-            "name": "Order " + Math.random(),
+            "name": "Order" + Math.random(),
             "model": "ice",
             "satellite": "sent-1"
         })
