@@ -916,7 +916,12 @@ var app = new Vue({
         if (localStorage.getItem("Token") == null) {
             showLoginPage()
         } else {
-            showMainPage()
+            if (JSON.parse(atob(localStorage.getItem("Token").split('.')[1]))["exp"] < Date.now() / 1000) {
+                console.log("JWT expired")
+                showLoginPage()
+            } else {
+                showMainPage()
+            }
         }
     },
     watch: {
