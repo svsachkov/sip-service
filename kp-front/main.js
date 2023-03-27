@@ -163,12 +163,10 @@ function setInteraction() {
         ],
     });
     dragAndDropInteraction.on('addfeatures', function (event) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", event.features)
         const vectorSource = new VectorSource({
             features: event.features,
         });
 
-        console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFF", vectorSource)
         lst.push(vectorSource)
         var lst_clear = [];
         for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
@@ -262,7 +260,6 @@ document.getElementById("exportBtn").addEventListener('click', function () {
         dataProjection: projection.value, featureProjection: 'EPSG:3857'
         // dataProjection: map.getView().getProjection().getCode(), featureProjection: 'EPSG:3857'
     });
-    console.log(json);
 
     function download(content, fileName, contentType) {
         var a = document.createElement("a");
@@ -293,12 +290,10 @@ document.getElementById("exportBtnL").addEventListener('click', function () {
             feat.push(f_lst[i][j]);
         }
     }
-    // console.log(feat);
     var json = new GeoJSON().writeFeatures(feat, {
         dataProjection: projection.value, featureProjection: 'EPSG:3857'
     });
 
-    // console.log(json);
 
     function download_l(content, fileName, contentType) {
         var a = document.createElement("a");
@@ -323,20 +318,14 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
     for (let i = 1; i < lst.length; i++) {
         map.addLayer(lst[i]);
     }
-    // console.log(lst);
 });
 let my_str;
 const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
 const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
-    let startDate = document.getElementById("startDatepicker").value
-    if (startDate.length === 0) {
-        startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
-    }
+    let startDate = document.getElementById("startDatepicker").value.split('/')
+    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
 
     const date = new Date(startDate);
     date.setDate(date.getDate() - 15);
@@ -364,24 +353,12 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
             lst.push(map.getLayers().array_[i])
         }
     }
-    // console.log(lst);
-    // var f_lst = []
-    // var feat = []
-    // for (let i = 0; i < lst.length; i++) {
-    //     f_lst.push(lst[i].getSource().getFeatures());
-    // }
-    // for (let i = 0; i < f_lst.length; i++) {
-    //     for (let j = 0; j < f_lst[i].length; j++) {
-    //         feat.push(f_lst[i][j]);
-    //     }
-    // }
-    map.setLayers(lst)
 
+    map.setLayers(lst)
 
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
-    console.log(features);
     if (features.length === 0) {
         if (zoneOfInterest.length === 0) {
             console.log("no shapes");
@@ -409,8 +386,6 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
             wktRepresenation = format.writeGeometry(olGeom._geomFact);
             Bound = olGeom._geomFact.getExtent();
         }
-        // console.log(Bound);
-        // console.log(wktRepresenation);
     }
 
     // TODO
@@ -432,14 +407,8 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 });
 
 document.getElementById("imgSearchBtn2").addEventListener('click', function () {
-    let startDate = document.getElementById("finishDatepicker").value
-
-    if (startDate.length === 0) {
-        startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
-    }
+    let startDate = document.getElementById("finishDatepicker").value.split('/')
+    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
 
     const date = new Date(startDate);
     date.setDate(date.getDate() - 15);
@@ -467,17 +436,6 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
             lst.push(map.getLayers().array_[i])
         }
     }
-    // console.log(lst);
-    // var f_lst = []
-    // var feat = []
-    // for (let i = 0; i < lst.length; i++) {
-    //     f_lst.push(lst[i].getSource().getFeatures());
-    // }
-    // for (let i = 0; i < f_lst.length; i++) {
-    //     for (let j = 0; j < f_lst[i].length; j++) {
-    //         feat.push(f_lst[i][j]);
-    //     }
-    // }
     map.setLayers(lst)
 
 
@@ -511,15 +469,12 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
             wktRepresenation = format.writeGeometry(olGeom._geomFact);
             Bound = olGeom._geomFact.getExtent();
         }
-        // console.log(Bound);
-        // console.log(wktRepresenation);
     }
 
     // TODO
     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
     //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    console.log(my_str)
     localStorage.setItem('url2', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
@@ -635,23 +590,16 @@ function onChangeProjection() { // TODO 24.03
     }
     map.setView(newView);
     map.setLayers([styles[styleSelector.value]]);
-    // map.addLayer(remember[0]);
-    // console.log(remember);
-    // for (let i = 0, ii = remember.length; i < ii; ++i) {
-    //     map.addLayer(remember[i]);
-    // }
 
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
-    // console.log(features);
     if (features.length === 0) {
         console.log('no shapes');
     } else {
         var format = new WKT();
         var geom;
         if (features.length === 1) {
-            // console.log(currentProjection.code_)
             geom = features[0].getGeometry().clone().transform(currentProjection.code_, viewProjSelect.value)
             wktRepresenation = format.writeGeometry(geom);
             // wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(currentProjection.code_, viewProjSelect.value));
@@ -659,8 +607,6 @@ function onChangeProjection() { // TODO 24.03
             console.log(geom)
             console.log(features[0])
         }
-        // console.log(Bound);
-        // console.log(wktRepresenation);
     }
 
     // TODO
@@ -682,10 +628,6 @@ function onChangeProjection() { // TODO 24.03
 }
 
 viewProjSelect.addEventListener('change', onChangeProjection);
-
-// document.querySelector('#app').innerHTML = `
-// <div></div>
-// `
 
 
 // ----------------------------------------------------------------------
@@ -870,13 +812,12 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
         body: JSON.stringify({
             "url": url,
             "url2": url2,
-            "name": "Order" + Math.random(),
-            "model": "ice", //"water"
-            "satellite": "sent-1" //"sent-2"
+            "name": "Order " + Math.random(),
+            "model": "ice",
+            "satellite": "sent-1"
         })
     }).then(response => response.json()).then(
         function (response) {
-            console.log(response)
             updateOrders()
         }
     )
@@ -896,7 +837,6 @@ document.getElementById("deleteAccount").addEventListener('click', async functio
     })
 
     if (response.ok) {
-        console.log("Token REMOVED")
         clearLocalStorage()
         // app.msg = ''
         showLoginPage()
@@ -915,7 +855,6 @@ function updateOrders() {
     const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
-    console.log(token)
     fetch(url_, {
         method: "GET",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
@@ -932,7 +871,6 @@ function getOrders(cOrders, fOrders) {
     const url_ = 'http://localhost:8000/orders'
     const token = localStorage.getItem("Token")
 
-    console.log(token)
     fetch(url_, {
         method: "GET",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token}
@@ -997,9 +935,7 @@ Vue.component('order-row', {
             map.setLayers(lst)
         },
         showImage(res, b) {
-            console.log("RES:", res)
             const bbox = b.split(', ').map(Number);
-            console.log("BBOX:", bbox)
 
             var lst = [];
             for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
@@ -1041,11 +977,9 @@ Vue.component('order-row', {
                 zIndex: 2
             });
             map.addLayer(imageLayer);
-            console.log("<>", map.getLayers())
             source.clear();
         },
         showResult(res) {
-            console.log(JSON.parse(res).features)
             var coords = JSON.parse(res).features[0].geometry.coordinates
 
             const feature = new Feature({
@@ -1107,7 +1041,6 @@ var app = new Vue({
         finishedOrders: []
     },
     created: function () {
-        console.log("CREATED")
         if (localStorage.getItem("Token") == null) {
             showLoginPage()
         } else {
@@ -1122,12 +1055,6 @@ var app = new Vue({
     watch: {
         msg(newValue, oldValue) {
             console.log("WATCH", newValue, oldValue)
-            // if (localStorage.getItem("Token") != null) {
-            //     $('#register_page').show()
-            // } else {
-            //     $('#register_page').hide()
-            // }
-
         }
     }
 })
