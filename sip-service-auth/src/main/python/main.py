@@ -14,9 +14,12 @@ import datetime
 
 import requests
 
-
 url = sys.argv[1].replace('jpeg', 'tiff')
-url2 = sys.argv[2].replace('jpeg', 'tiff')
+url2 = sys.argv[2]
+if url2 != "null":
+    url2 = url2.replace('jpeg', 'tiff')
+else:
+    url2 = None
 order_id = sys.argv[3]
 # url = 'http://services.sentinel-hub.com/ogc/wms/cbe156b7-660c-4640-a5a1-ea774aecf9ce?SERVICE=WMS&REQUEST=GetMap&CRS' \
 #       '=EPSG:3857&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT' \
@@ -24,12 +27,14 @@ order_id = sys.argv[3]
 #       '1155769.285697225 3990882.3458559057,1155769.285697225 4066966.6497494457,1089372.5680352768 ' \
 #       '4066966.6497494457,1089372.5680352768 3990882.3458559057))' \
 #     .replace('jpeg', 'tiff')
-#order_id = '89f4fd0b-6945-45d7-aab2-18f064383185'
+# order_id = '348e75ec-f8d4-48ca-a825-f73103713aed'
+# url2 = None
 model_name = 'water'
 
 model_path = f'src/main/python/models/{model_name}.pt'
 input_img_path = f'src/main/python/images/inputs/input_{model_name}.tiff'
 output_img_path = f'src/main/python/images/outputs/output_{model_name}.tiff'
+
 
 def process(url):
     x = requests.get(url)
@@ -68,9 +73,8 @@ def process(url):
 result, bbox = process(url)
 
 result2 = ""
-if url2 != "":
+if url2 is not None:
     result2, bbox = process(url2)
-
 
 # ------------------------------------DATABASE-----------------------------------------------------
 
@@ -83,9 +87,9 @@ try:
     cursor = connection.cursor()
 
     q = """UPDATE orders
-                SET status = %s, url = %s, finished_at = %s, result = %s, result2 = %s, bbox = %s
+                SET status = %s, url = %s, url2 = %s, finished_at = %s, result = %s, result2 = %s, bbox = %s
                 WHERE id = %s"""
-    record = ("true", url, datetime.datetime.now(), result, result2, bbox, order_id)
+    record = ("true", url, url2, datetime.datetime.now(), result, result2, bbox, order_id)
 
     cursor.execute(q, record)
 
