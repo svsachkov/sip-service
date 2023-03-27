@@ -99,6 +99,30 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                                     order_id,
                                     model
                             );
+                            break;
+                        case "ice":
+                            if (satellite == "sent-1") {
+                                pb = new ProcessBuilder(
+                                        "python",
+                                        "src/main/python/ice.py",
+                                        param_url,
+                                        param_url2,
+                                        order_id,
+                                        model
+                                );
+                            } else if (satellite == "sent-2") {
+                                pb = new ProcessBuilder(
+                                        "python",
+                                        "src/main/python/ice2.py",
+                                        param_url,
+                                        param_url2,
+                                        order_id,
+                                        model
+                                );
+                            } else {
+
+                            }
+                            break;
                     }
 
                     pb.redirectErrorStream(true);

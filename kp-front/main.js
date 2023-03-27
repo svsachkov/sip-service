@@ -324,6 +324,29 @@ let my_str;
 const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
+    let startDate = document.getElementById("startDatepicker").value.split('/')
+    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+
+    const date = new Date(startDate);
+    date.setDate(date.getDate() - 5);
+    console.log(date)
+
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (month < 10) {
+        month = "0" + month.toString();
+    }
+    if (day < 10) {
+        day = "0" + day.toString();
+    }
+
+    const startDate0 = [year, month, day].join('-')
+
+    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+
     var lst = [];
     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
         if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
@@ -369,7 +392,7 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 
     // TODO
     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
     localStorage.setItem('url', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
@@ -791,8 +814,8 @@ Vue.component('order-row', {
         // '<div><i>ID: {{order.id}}</i></div>' +
         '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
         '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
-        '<div>Created: {{order.createdAt}}</div>' +
-        '<div>Finised: {{order.finishedAt}}</div>' +
+        '<div>Created: {{new Date(order.createdAt).toLocaleString()}}</div>' +
+        '<div>Finised: {{new Date(order.finishedAt).toLocaleString()}}</div>' +
         '<div><button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button></div>' +
         '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
         '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div></div>',
