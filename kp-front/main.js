@@ -412,8 +412,14 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 });
 
 document.getElementById("imgSearchBtn2").addEventListener('click', function () {
-    let startDate = document.getElementById("finishDatepicker").value.split('/')
-    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    let startDate = document.getElementById("finishDatepicker").value
+
+    if (startDate.length === 0) {
+        startDate = "2020" + "-" + "06" + "-" + "02"
+    } else {
+        startDate = startDate.split('/')
+        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+    }
 
     const date = new Date(startDate);
     date.setDate(date.getDate() - 15);
