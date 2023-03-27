@@ -1,9 +1,7 @@
 import os
 import torchvision
 import segmentation_models_pytorch as smp
-from vectorize import vectorize
 from torch.utils.data import Dataset, DataLoader
-import sys
 import torch
 import rasterio
 import PIL.Image
