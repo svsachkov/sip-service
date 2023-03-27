@@ -50,6 +50,10 @@ import MultiPolygon from './node_modules/ol/geom/MultiPolygon.js';
 import {Extent} from "ol/interaction.js";
 import {or} from "ol/format/filter.js";
 
+var zoneOfInterest = []
+var varwkt
+var varbound
+
 const key = '4Z4vZj5CICocrdP4mCFb';
 const attributions =
     '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
@@ -323,6 +327,7 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
 });
 let my_str;
 const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
+const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
     let startDate = document.getElementById("startDatepicker").value.split('/')
@@ -371,9 +376,15 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
-    // console.log(features);
+    console.log(features);
     if (features.length === 0) {
-        console.log('no shapes');
+        if (zoneOfInterest.length === 0) {
+            console.log("no shapes");
+        } else {
+            wktRepresenation = varwkt;
+            Bound = varbound;
+
+        }
     } else {
         var format = new WKT();
         var geom = [];
@@ -381,6 +392,12 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
             wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
             Bound = features[0].getGeometry().getExtent();
             console.log(Bound)
+
+            zoneOfInterest = features;
+            console.log(zoneOfInterest)
+
+            varwkt = wktRepresenation;
+            varbound = Bound;
         } else {
             // TODO: сделать не только для двух полигонов
             var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
@@ -393,7 +410,8 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
 
     // TODO
     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
     localStorage.setItem('url', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
@@ -455,9 +473,14 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
-    // console.log(features);
+    console.log(features);
     if (features.length === 0) {
-        console.log('no shapes');
+        if (zoneOfInterest.length === 0) {
+            console.log("no shapes");
+        } else {
+            wktRepresenation = varwkt;
+            Bound = varbound;
+        }
     } else {
         var format = new WKT();
         var geom = [];
@@ -465,6 +488,12 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
             wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
             Bound = features[0].getGeometry().getExtent();
             console.log(Bound)
+
+            zoneOfInterest = features;
+            console.log(zoneOfInterest)
+
+            varwkt = wktRepresenation;
+            varbound = Bound;
         } else {
             // TODO: сделать не только для двух полигонов
             var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
@@ -477,9 +506,10 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
 
     // TODO
     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
-    localStorage.setItem('url', my_str)
+    localStorage.setItem('url2', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
         source: new ImageStatic({
@@ -819,6 +849,7 @@ const interval = setInterval(function () {
 
 document.getElementById("StepaBtn").addEventListener('click', function () {
     const url = localStorage.getItem("url")
+    const url2 = localStorage.getItem("url2")
     const token = localStorage.getItem("Token")
 
     const url_ = 'http://localhost:8000/order'
@@ -827,10 +858,10 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
         body: JSON.stringify({
             "url": url,
+            "url2": url2,
             "name": "Order" + Math.random(),
-            "model": "water",
-            "url2": null,
-            "satellite": "satellite2"
+            "model": "ice",
+            "satellite": "sent-1"
         })
     }).then(response => response.json()).then(
         function (response) {
@@ -838,6 +869,9 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
             updateOrders()
         }
     )
+
+    localStorage.setItem("url", null)
+    localStorage.setItem("url2", null)
 });
 
 

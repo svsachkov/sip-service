@@ -78,13 +78,39 @@ elif model_name == models["ice"]:
     process_image_ice(model_path, img, output_img_path, img_vv)
     result, bbox, mp1 = vectorize(url, output_img_path)
 
+    if url2 != "null":
+        load_and_save_image(url2.replace("VV", "VV"), vv_img_path)
+        load_and_save_image(url2.replace("VV", "VH"), vh_img_path)
+        load_and_save_image(url2.replace("VV", "VV-20"), vv20_img_path)
+        load_and_save_image(url2.replace("VV", "VH-20"), vh20_img_path)
+
+        img_vv = rasterio.open(vv_img_path, 'r')
+        img_vh = rasterio.open(vh_img_path, 'r')
+        img_vv20 = rasterio.open(vv20_img_path, 'r')
+        img_vh20 = rasterio.open(vh20_img_path, 'r')
+
+        img = np.ndarray(shape=(4, *img_vv.shape))
+        img[0] = np.array(img_vv.read(1))
+        img[1] = np.array(img_vv.read(1))
+        img[2] = np.array(img_vv.read(1))
+        img[3] = np.array(img_vv.read(1))
+
+        with rasterio.open(input_img_path, 'w', **img_vv.profile) as src:
+            src.write(img)
+
+        process_image_ice(model_path, img, output_img_path, img_vv)
+        result2, bbox, mp2 = vectorize(url2, output_img_path)
+
 # ----------------------------------------------------DATABASE----------------------------------------------------
 
 diff = None
 if result2 is not None:
-    diff = symmetric_difference(mp1, mp2)
-    gpd.GeoSeries(diff).simplify(tolerance=500).to_file(f"diff.json", driver='GeoJSON', show_bbox=False)
-    diff = gpd.GeoSeries(diff).to_json()
+    try:
+        diff = symmetric_difference(mp1, mp2)
+        gpd.GeoSeries(diff).simplify(tolerance=500).to_file(f"diff.json", driver='GeoJSON', show_bbox=False)
+        diff = gpd.GeoSeries(diff).to_json()
+    except:
+        pass
 
 # Update the finished order in the database:
 db = {
