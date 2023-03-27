@@ -30,6 +30,7 @@ public class OrderService implements CrudService<Order, OrderRequest> {
     public CreateResponse<Order> create(OrderRequest orderRequest) throws ApiRequestException {
         Order order = Order.builder()
                 .url(orderRequest.getUrl())
+                .name(orderRequest.getName())
                 .model(orderRequest.getModel())
                 .satellite(orderRequest.getSatellite())
                 .createdAt(new Date())

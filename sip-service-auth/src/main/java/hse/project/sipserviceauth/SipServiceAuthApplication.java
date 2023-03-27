@@ -96,7 +96,8 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                                     "src/main/python/main.py",
                                     param_url,
                                     param_url2,
-                                    order_id
+                                    order_id,
+                                    model
                             );
                     }
 

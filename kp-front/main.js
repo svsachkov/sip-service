@@ -719,6 +719,7 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
         body: JSON.stringify({
             "url": url,
+            "name": "Order" + Math.random(),
             "model": "water",
             "url2": null,
             "satellite": "satellite2"

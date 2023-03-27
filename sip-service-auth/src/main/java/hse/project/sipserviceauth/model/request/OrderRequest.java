@@ -13,6 +13,8 @@ public class OrderRequest {
 
     private String url;
 
+    private String name;
+
     private String model;
 
     private String satellite;

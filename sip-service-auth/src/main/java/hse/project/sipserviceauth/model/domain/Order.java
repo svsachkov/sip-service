@@ -27,6 +27,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private String name;
+
     @Column(length = 1000000)
     private String url;
 
