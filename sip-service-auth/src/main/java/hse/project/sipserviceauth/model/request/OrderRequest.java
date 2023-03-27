@@ -15,5 +15,7 @@ public class OrderRequest {
 
     private String model;
 
+    private String satellite;
+
     private String url2;
 }

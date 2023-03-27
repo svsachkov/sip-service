@@ -31,13 +31,11 @@ public class OrderService implements CrudService<Order, OrderRequest> {
         Order order = Order.builder()
                 .url(orderRequest.getUrl())
                 .model(orderRequest.getModel())
+                .satellite(orderRequest.getSatellite())
                 .createdAt(new Date())
                 .finishedAt(null)
                 .status(false)
-                .result("")
-                .bbox("")
                 .url2(orderRequest.getUrl2())
-                .result2("")
                 .user(AuthorizedUser.getUser())
                 .build();
 

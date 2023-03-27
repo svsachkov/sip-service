@@ -57,11 +57,14 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                 Order order = Order.builder()
                         .id((UUID) rs.getObject("id"))
                         .url(rs.getString("url"))
+                        .url2(rs.getString("url2"))
                         .model(rs.getString("model"))
+                        .satellite(rs.getString("satellite"))
                         .createdAt(rs.getDate("created_at"))
                         .finishedAt(rs.getDate("finished_at"))
                         .status(rs.getBoolean("status"))
                         .result(rs.getString("result"))
+                        .result2(rs.getString("result2"))
                         .build();
                 orders.add(order);
             }
@@ -76,6 +79,8 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                 System.out.println("Start Python");
 
                 Order order = orders.peek();
+                String model = order.getModel();
+                String satellite = order.getSatellite();
                 String order_url = order.getUrl();
                 String order_url2 = order.getUrl2();
                 String order_id = order.getId().toString();
@@ -83,13 +88,18 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                 String param_url2 = "\"" + order_url2 + "\"";
 
                 try {
-                    ProcessBuilder pb = new ProcessBuilder(
-                            "python",
-                            "src/main/python/main.py",
-                            param_url,
-                            param_url2,
-                            order_id
-                    );
+                    ProcessBuilder pb = null;
+                    switch (model) {
+                        case "water":
+                            pb = new ProcessBuilder(
+                                    "python",
+                                    "src/main/python/main.py",
+                                    param_url,
+                                    param_url2,
+                                    order_id
+                            );
+                    }
+
                     pb.redirectErrorStream(true);
                     Process p = pb.start();
                     p.waitFor();

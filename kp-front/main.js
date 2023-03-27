@@ -719,7 +719,9 @@ document.getElementById("StepaBtn").addEventListener('click', function () {
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
         body: JSON.stringify({
             "url": url,
-            "model_name": "model"
+            "model": "water",
+            "url2": null,
+            "satellite": "satellite2"
         })
     }).then(response => response.json()).then(
         function (response) {

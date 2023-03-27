@@ -32,6 +32,8 @@ public class Order {
 
     private String model;
 
+    private String satellite;
+
     private Date createdAt;
 
     private Date finishedAt;
@@ -44,8 +46,10 @@ public class Order {
     @Column(length = 1000000)
     private String bbox;
 
+    @Column(length = 1000000)
     private String url2;
 
+    @Column(length = 1000000)
     private String result2;
 
     @ManyToOne(fetch = FetchType.LAZY)

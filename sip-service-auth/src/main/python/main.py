@@ -72,7 +72,7 @@ def process(url):
 
 result, bbox = process(url)
 
-result2 = ""
+result2 = None
 if url2 is not None:
     result2, bbox = process(url2)
 
