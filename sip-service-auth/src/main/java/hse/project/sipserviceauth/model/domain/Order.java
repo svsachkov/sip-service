@@ -54,6 +54,9 @@ public class Order {
     @Column(length = 1000000)
     private String result2;
 
+    @Column(length = 100000000)
+    private String diff;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     @ToString.Exclude

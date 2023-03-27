@@ -329,7 +329,91 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
 
     const date = new Date(startDate);
-    date.setDate(date.getDate() - 5);
+    date.setDate(date.getDate() - 15);
+    console.log(date)
+
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (month < 10) {
+        month = "0" + month.toString();
+    }
+    if (day < 10) {
+        day = "0" + day.toString();
+    }
+
+    const startDate0 = [year, month, day].join('-')
+
+    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+
+    var lst = [];
+    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+            lst.push(map.getLayers().array_[i])
+        }
+    }
+    // console.log(lst);
+    // var f_lst = []
+    // var feat = []
+    // for (let i = 0; i < lst.length; i++) {
+    //     f_lst.push(lst[i].getSource().getFeatures());
+    // }
+    // for (let i = 0; i < f_lst.length; i++) {
+    //     for (let j = 0; j < f_lst[i].length; j++) {
+    //         feat.push(f_lst[i][j]);
+    //     }
+    // }
+    map.setLayers(lst)
+
+
+    var features = source.getFeatures();
+    var wktRepresenation;
+    var Bound;
+    // console.log(features);
+    if (features.length === 0) {
+        console.log('no shapes');
+    } else {
+        var format = new WKT();
+        var geom = [];
+        if (features.length === 1) {
+            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+            Bound = features[0].getGeometry().getExtent();
+            console.log(Bound)
+        } else {
+            // TODO: сделать не только для двух полигонов
+            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+            wktRepresenation = format.writeGeometry(olGeom._geomFact);
+            Bound = olGeom._geomFact.getExtent();
+        }
+        // console.log(Bound);
+        // console.log(wktRepresenation);
+    }
+
+    // TODO
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    console.log(my_str)
+    localStorage.setItem('url', my_str)
+    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+    var imageLayer = new ImageLayer({
+        source: new ImageStatic({
+            url: my_str,
+            imageExtent: img_ext // east, north, west, south
+        }),
+        zIndex: 0
+    });
+    map.addLayer(imageLayer);
+    source.clear();
+});
+
+document.getElementById("imgSearchBtn2").addEventListener('click', function () {
+    let startDate = document.getElementById("finishDatepicker").value.split('/')
+    startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+
+    const date = new Date(startDate);
+    date.setDate(date.getDate() - 15);
     console.log(date)
 
     const year = date.getFullYear();

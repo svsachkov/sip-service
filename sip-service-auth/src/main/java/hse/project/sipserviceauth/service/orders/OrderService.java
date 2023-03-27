@@ -36,6 +36,7 @@ public class OrderService implements CrudService<Order, OrderRequest> {
                 .createdAt(new Date())
                 .finishedAt(null)
                 .status(false)
+                .diff(null)
                 .url2(orderRequest.getUrl2())
                 .user(AuthorizedUser.getUser())
                 .build();

@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.UUID;
 
@@ -65,6 +66,7 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                         .status(rs.getBoolean("status"))
                         .result(rs.getString("result"))
                         .result2(rs.getString("result2"))
+                        .diff(rs.getString("diff"))
                         .build();
                 orders.add(order);
             }
@@ -79,6 +81,7 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                 System.out.println("Start Python");
 
                 Order order = orders.peek();
+
                 String model = order.getModel();
                 String satellite = order.getSatellite();
                 String order_url = order.getUrl();
@@ -101,16 +104,16 @@ public class SipServiceAuthApplication implements WebMvcConfigurer {
                             );
                             break;
                         case "ice":
-                            if (satellite == "sent-1") {
+                            if (Objects.equals(satellite, "sent-1")) {
                                 pb = new ProcessBuilder(
                                         "python",
-                                        "src/main/python/ice.py",
+                                        "src/main/python/main.py",
                                         param_url,
                                         param_url2,
                                         order_id,
                                         model
                                 );
-                            } else if (satellite == "sent-2") {
+                            } else if (Objects.equals(satellite, "sent-2")) {
                                 pb = new ProcessBuilder(
                                         "python",
                                         "src/main/python/ice2.py",
