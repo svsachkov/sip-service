@@ -1107,9 +1107,9 @@ Vue.component('order-card-row', {
         '           </div>' +
                 '</div>' +
         '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
-        '</div>' +
-        '<table>' +
-            '<tbody align="center">' +
+        '<div style="align-items: center;\n' +
+        '            text-align: center;"><table style="margin: 0 auto; ">' +
+            '<tbody>' +
                 '<tr>' +
                     '<td>' +
                         '<div v-if="show_1 == true && show_2 == true"><button @click="sendNewOrder()" class="btn btn-success m-1" style="">Отправить </button></div>' +
@@ -1120,7 +1120,8 @@ Vue.component('order-card-row', {
                     '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>' +
+        '</table></div>' +
+        '</div>' +
         '</div>',
     methods: {
         pickedDate1() {
