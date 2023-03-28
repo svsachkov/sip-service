@@ -1108,8 +1108,8 @@ Vue.component('order-card-row', {
                 '</div>' +
         '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
         '</div>' +
-        '<table style="margin-left: 10%">' +
-            '<tbody>' +
+        '<table>' +
+            '<tbody align="center">' +
                 '<tr>' +
                     '<td>' +
                         '<div v-if="show_1 == true && show_2 == true"><button @click="sendNewOrder()" class="btn btn-success m-1" style="">Отправить </button></div>' +
@@ -1138,6 +1138,7 @@ Vue.component('order-card-row', {
             this.show_1 = false;
             this.show_2 = false;
             this.show_3 = false;
+            this.iceSelected = false
             document.getElementById("createNewOrder").disabled = false
 
             document.getElementById('shapeType').value = 'None'
