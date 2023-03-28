@@ -1,5 +1,5 @@
 import './style.css'
-import {setupCounter} from './counter.js'
+// import {setupCounter} from './counter.js'
 import VectorSource from './node_modules/ol/source/Vector.js';
 import VectorLayer from './node_modules/ol/layer/Vector.js';
 import ImageLayer from './node_modules/ol/layer/Image.js';
@@ -320,7 +320,7 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
     }
 });
 let my_str;
-const key_ogc = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
+const sent_2 = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
 const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
@@ -394,8 +394,8 @@ document.getElementById("imgSearchBtn").addEventListener('click', function () {
     }
 
     // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
     localStorage.setItem('url', my_str)
@@ -483,8 +483,8 @@ document.getElementById("imgSearchBtn2").addEventListener('click', function () {
     }
 
     // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     localStorage.setItem('url2', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
@@ -621,9 +621,9 @@ function onChangeProjection() { // TODO 24.03
     }
 
     // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
     if (remember.length > 0) {
-        my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${viewProjSelect.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+        my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${viewProjSelect.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
         console.log(my_str)
         var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
         var imageLayer = new ImageLayer({
@@ -882,8 +882,8 @@ function sendOrder() {
             "url": url,
             "url2": url2,
             "name": "Order" + Math.random(),
-            "model": "ice",
-            "satellite": "sent-1"
+            "model": "water",
+            "satellite": "sent-2"
         })
     }).then(response => response.json()).then(
         function (response) {
@@ -898,9 +898,6 @@ function sendOrder() {
 function getFirstImage(startDate) {
     if (startDate.length === 0) {
         startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
     }
 
     const date = new Date(startDate);
@@ -965,9 +962,9 @@ function getFirstImage(startDate) {
     }
 
     // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     console.log(my_str)
     localStorage.setItem('url', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
@@ -985,9 +982,6 @@ function getFirstImage(startDate) {
 function getSecondImage(startDate) {
     if (startDate.length === 0) {
         startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
     }
 
     const date = new Date(startDate);
@@ -1052,9 +1046,9 @@ function getSecondImage(startDate) {
     }
 
     // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${key_ogc}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
     localStorage.setItem('url2', my_str)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
@@ -1075,7 +1069,11 @@ Vue.component('order-card-row', {
             show_1: false,
             show_2: false,
             show_3: false,
-            iceSelected: false
+            iceSelected: false,
+            col1: false,
+            col2: false,
+            date1: "",
+            date2: ""
         }
     },
     template:
@@ -1108,8 +1106,15 @@ Vue.component('order-card-row', {
             '<div style="margin-left: 12%;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i>Добавить даты съемки</i></div>' +
                 '<div v-if="show_3 == true"> ' +
         '           <div style="align-items: center; text-align: center;">' +
-                        '<p>Start date: <input type="date" id="startDatepicker"></p>\n' +
-                        '<p>Finish date: <input type="date" id="finishDatepicker"></p>' +
+                        '<p>Start date: <input @change="pickedDate1()" type="date" id="startDatepicker"></p>\n' +
+                        '<p>Finish date: <input @change="pickedDate2()" type="date" id="finishDatepicker"></p>' +
+                        '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
+                        '<div v-if="col1 == true && col2 == true" class="collapse" id="collapseExample" style="margin-bottom: 10px;">\n' +
+                        '  <div class="card card-body">\n' +
+                            '<a @click="showFirstDate()" id="showFirstDateImage" style="cursor: pointer;"><u>{{date1}}</u></a>' +
+                            '<a @click="showSecondDate()" id="showSecondDateImage" style="cursor: pointer;"><u>{{date2}}</u></a>' +
+                        '  </div>\n' +
+                        '</div>' +
         '           </div>' +
                 '</div>' +
         '</div>' +
@@ -1118,6 +1123,16 @@ Vue.component('order-card-row', {
         '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div>' +
         '</div>',
     methods: {
+        pickedDate1() {
+            const date1 = document.getElementById("startDatepicker").value
+            this.date1 = date1
+            this.col1 = date1.length > 0;
+        },
+        pickedDate2() {
+            const date2 = document.getElementById("finishDatepicker").value
+            this.date2 = date2
+            this.col2 = document.getElementById("finishDatepicker").value.length > 0;
+        },
         deleteEmptyOrder() {
             app.orders = []
             this.show_1 = false;
@@ -1145,6 +1160,26 @@ Vue.component('order-card-row', {
                 getSecondImage(document.getElementById("finishDatepicker").value)
             }
             // sendOrder()
+        },
+        showFirstDate() {
+            getFirstImage(document.getElementById("startDatepicker"))
+        },
+        showSecondDate() {
+            getSecondImage(document.getElementById("finishDatepicker"))
+        },
+        showImages() {
+            const date1 = document.getElementById("startDatepicker").value
+            const date2 = document.getElementById("finishDatepicker").value
+
+            if (date1.length > 0 && date2.length > 0) {
+
+            } else if (date1.length > 0) {
+                getFirstImage()
+            } else if (date2.length > 0) {
+                getSecondImage()
+            } else {
+                getFirstImage()
+            }
         },
         show1() {
             if (this.show_1 === true) {
