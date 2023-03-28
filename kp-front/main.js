@@ -1223,7 +1223,13 @@ Vue.component('order-card-row', {
             getSecondImage(document.getElementById("finishDatepicker").value, sat)
         },
         showImages() {
-            const sat = document.getElementById("satType").value
+            let sat = ""
+            if (this.show_2 === false) {
+                sat = "sent-2"
+            } else {
+                sat = document.getElementById("satType").value
+            }
+
             if (this.show_3 === false) {
                 getFirstImage("", sat)
             } else {
