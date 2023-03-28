@@ -1079,7 +1079,7 @@ Vue.component('order-card-row', {
     template:
         '<div v-if="order[0] == 1" class="customCard"><p>Создание заказа</p>' +
         '<div style="all:initial;">' +
-            '<div style="margin-left: 12%;"><button @click="show1()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_1==true">-</p><p v-if="show_1==false">+</p></button> <i>Добавить разметку</i></div>' +
+            '<div style="margin-left: 12%;"><button @click="show1()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_1==true">-</p><p v-if="show_1==false">+</p></button> <i @click="show1()" style="cursor: pointer;">Добавить разметку</i></div>' +
                 '<div v-if="show_1 == true">' +
                     '<label class="input-group-text" for="shapeType">Geometry type:</label>\n' +
                     '              <select @change="selectArea()" class="form-select" id="shapeType">\n' +
@@ -1088,7 +1088,7 @@ Vue.component('order-card-row', {
                     '                  <option value="Box">Box</option>\n' +
                     '              </select>' +
                 '</div>' +
-            '<div style="margin-left: 12%;"><button @click="show2()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_2==true">-</p><p v-if="show_2==false">+</p></button> <i>Добавить параметры</i></div>' +
+            '<div style="margin-left: 12%;"><button @click="show2()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_2==true">-</p><p v-if="show_2==false">+</p></button> <i @click="show2()" style="cursor: pointer;">Добавить параметры</i></div>' +
                 '<div v-if="show_2 == true">' +
                     '<div style="align-items: center; text-align: center;">' +
         '               <label class="input-group-text" for="modelType">Модель:</label>\n' +
@@ -1103,7 +1103,7 @@ Vue.component('order-card-row', {
         '               </select>' +
         '           </div>' +
                 '</div>' +
-            '<div style="margin-left: 12%;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i>Добавить даты съемки</i></div>' +
+            '<div style="margin-left: 12%;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i @click="show3()" style="cursor: pointer;">Добавить даты съемки</i></div>' +
                 '<div v-if="show_3 == true"> ' +
         '           <div style="align-items: center; text-align: center;">' +
                         '<p>Start date: <input @change="pickedDate1()" type="date" id="startDatepicker"></p>\n' +
