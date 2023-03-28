@@ -241,6 +241,9 @@ function update() { // TODO 24.03
     map.addLayer(vector);
     map.addLayer(remember[0]);
 
+    if (remember.length !== 0) {
+        map.addLayer(remember[0]);
+    }
 }
 
 styleSelector.addEventListener('change', update);
