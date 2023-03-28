@@ -1108,7 +1108,6 @@ Vue.component('order-card-row', {
         '           <div style="align-items: center; text-align: center;">' +
                         '<p>Start date: <input @change="pickedDate1()" type="date" id="startDatepicker"></p>\n' +
                         '<p>Finish date: <input @change="pickedDate2()" type="date" id="finishDatepicker"></p>' +
-                        '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
                         '<div v-if="col1 == true && col2 == true" class="collapse" id="collapseExample" style="margin-bottom: 10px;">\n' +
                         '  <div class="card card-body">\n' +
                             '<a @click="showFirstDate()" id="showFirstDateImage" style="cursor: pointer;"><u>{{date1}}</u></a>' +
@@ -1117,6 +1116,7 @@ Vue.component('order-card-row', {
                         '</div>' +
         '           </div>' +
                 '</div>' +
+        '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
         '</div>' +
         '<div v-if="show_1 == true && show_2 == true && show_3 == true"><button @click="sendNewOrder()" class="btn btn-success" style="">Отправить заказ</button></div>' +
         '<div v-if="!(show_1 == true && show_2 == true && show_3 == true)"><button @click="sendNewOrder()" class="btn btn-success" disabled>Отправить заказ</button></div>' +
@@ -1162,23 +1162,26 @@ Vue.component('order-card-row', {
             // sendOrder()
         },
         showFirstDate() {
-            getFirstImage(document.getElementById("startDatepicker"))
+            getFirstImage(document.getElementById("startDatepicker").value)
         },
         showSecondDate() {
-            getSecondImage(document.getElementById("finishDatepicker"))
+            getSecondImage(document.getElementById("finishDatepicker").value)
         },
         showImages() {
-            const date1 = document.getElementById("startDatepicker").value
-            const date2 = document.getElementById("finishDatepicker").value
-
-            if (date1.length > 0 && date2.length > 0) {
-
-            } else if (date1.length > 0) {
-                getFirstImage()
-            } else if (date2.length > 0) {
-                getSecondImage()
+            if (this.show_3 === false) {
+                getFirstImage("")
             } else {
-                getFirstImage()
+                const date1 = document.getElementById("startDatepicker").value
+                const date2 = document.getElementById("finishDatepicker").value
+                if (date1.length > 0 && date2.length > 0) {
+
+                } else if (date1.length > 0) {
+                    getFirstImage(document.getElementById("startDatepicker").value)
+                } else if (date2.length > 0) {
+                    getSecondImage(document.getElementById("finishDatepicker").value)
+                } else {
+                    getFirstImage("")
+                }
             }
         },
         show1() {
@@ -1194,6 +1197,8 @@ Vue.component('order-card-row', {
         },
         show3() {
             this.show_3 = !this.show_3
+            this.col1 = ""
+            this.col2 = ""
         },
         selectArea() {
             map.removeInteraction(draw);
