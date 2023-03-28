@@ -322,181 +322,181 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
 let my_str;
 
 
-document.getElementById("imgSearchBtn").addEventListener('click', function () {
-    let startDate = document.getElementById("startDatepicker").value
-    if (startDate.length === 0) {
-        startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
-    }
-
-    const date = new Date(startDate);
-    date.setDate(date.getDate() - 15);
-    console.log(date)
-
-    const year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    if (month < 10) {
-        month = "0" + month.toString();
-    }
-    if (day < 10) {
-        day = "0" + day.toString();
-    }
-
-    const startDate0 = [year, month, day].join('-')
-
-    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
-    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
-
-    var lst = [];
-    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
-        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
-            lst.push(map.getLayers().array_[i])
-        }
-    }
-
-    map.setLayers(lst)
-
-    var features = source.getFeatures();
-    var wktRepresenation;
-    var Bound;
-    if (features.length === 0) {
-        if (zoneOfInterest.length === 0) {
-            console.log("no shapes");
-        } else {
-            wktRepresenation = varwkt;
-            Bound = varbound;
-
-        }
-    } else {
-        var format = new WKT();
-        var geom = [];
-        if (features.length === 1) {
-            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
-            Bound = features[0].getGeometry().getExtent();
-            console.log(Bound)
-
-            zoneOfInterest = features;
-            console.log(zoneOfInterest)
-
-            varwkt = wktRepresenation;
-            varbound = Bound;
-        } else {
-            // TODO: сделать не только для двух полигонов
-            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
-            wktRepresenation = format.writeGeometry(olGeom._geomFact);
-            Bound = olGeom._geomFact.getExtent();
-        }
-    }
-
-    // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    console.log(my_str)
-    localStorage.setItem('url', my_str)
-    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
-    var imageLayer = new ImageLayer({
-        source: new ImageStatic({
-            url: my_str,
-            imageExtent: img_ext // east, north, west, south
-        }),
-        zIndex: 0
-    });
-    map.addLayer(imageLayer);
-    source.clear();
-});
-
-document.getElementById("imgSearchBtn2").addEventListener('click', function () {
-    let startDate = document.getElementById("finishDatepicker").value
-
-    if (startDate.length === 0) {
-        startDate = "2020" + "-" + "06" + "-" + "02"
-    } else {
-        startDate = startDate.split('/')
-        startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
-    }
-
-    const date = new Date(startDate);
-    date.setDate(date.getDate() - 15);
-    console.log(date)
-
-    const year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    if (month < 10) {
-        month = "0" + month.toString();
-    }
-    if (day < 10) {
-        day = "0" + day.toString();
-    }
-
-    const startDate0 = [year, month, day].join('-')
-
-    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
-    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
-
-    var lst = [];
-    for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
-        if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
-            lst.push(map.getLayers().array_[i])
-        }
-    }
-    map.setLayers(lst)
-
-
-    var features = source.getFeatures();
-    var wktRepresenation;
-    var Bound;
-    console.log(features);
-    if (features.length === 0) {
-        if (zoneOfInterest.length === 0) {
-            console.log("no shapes");
-        } else {
-            wktRepresenation = varwkt;
-            Bound = varbound;
-        }
-    } else {
-        var format = new WKT();
-        var geom = [];
-        if (features.length === 1) {
-            wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
-            Bound = features[0].getGeometry().getExtent();
-            console.log(Bound)
-
-            zoneOfInterest = features;
-            console.log(zoneOfInterest)
-
-            varwkt = wktRepresenation;
-            varbound = Bound;
-        } else {
-            // TODO: сделать не только для двух полигонов
-            var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
-            wktRepresenation = format.writeGeometry(olGeom._geomFact);
-            Bound = olGeom._geomFact.getExtent();
-        }
-    }
-
-    // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    localStorage.setItem('url2', my_str)
-    var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
-    var imageLayer = new ImageLayer({
-        source: new ImageStatic({
-            url: my_str,
-            imageExtent: img_ext // east, north, west, south
-        }),
-        zIndex: 0
-    });
-    map.addLayer(imageLayer);
-    source.clear();
-});
+// document.getElementById("imgSearchBtn").addEventListener('click', function () {
+//     let startDate = document.getElementById("startDatepicker").value
+//     if (startDate.length === 0) {
+//         startDate = "2020" + "-" + "06" + "-" + "02"
+//     } else {
+//         startDate = startDate.split('/')
+//         startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+//     }
+//
+//     const date = new Date(startDate);
+//     date.setDate(date.getDate() - 15);
+//     console.log(date)
+//
+//     const year = date.getFullYear();
+//     let month = date.getMonth() + 1;
+//     let day = date.getDate();
+//
+//     if (month < 10) {
+//         month = "0" + month.toString();
+//     }
+//     if (day < 10) {
+//         day = "0" + day.toString();
+//     }
+//
+//     const startDate0 = [year, month, day].join('-')
+//
+//     // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+//     // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+//
+//     var lst = [];
+//     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+//         if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+//             lst.push(map.getLayers().array_[i])
+//         }
+//     }
+//
+//     map.setLayers(lst)
+//
+//     var features = source.getFeatures();
+//     var wktRepresenation;
+//     var Bound;
+//     if (features.length === 0) {
+//         if (zoneOfInterest.length === 0) {
+//             console.log("no shapes");
+//         } else {
+//             wktRepresenation = varwkt;
+//             Bound = varbound;
+//
+//         }
+//     } else {
+//         var format = new WKT();
+//         var geom = [];
+//         if (features.length === 1) {
+//             wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+//             Bound = features[0].getGeometry().getExtent();
+//             console.log(Bound)
+//
+//             zoneOfInterest = features;
+//             console.log(zoneOfInterest)
+//
+//             varwkt = wktRepresenation;
+//             varbound = Bound;
+//         } else {
+//             // TODO: сделать не только для двух полигонов
+//             var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+//             wktRepresenation = format.writeGeometry(olGeom._geomFact);
+//             Bound = olGeom._geomFact.getExtent();
+//         }
+//     }
+//
+//     // TODO
+//     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+//     //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+//     my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+//     console.log(my_str)
+//     localStorage.setItem('url', my_str)
+//     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+//     var imageLayer = new ImageLayer({
+//         source: new ImageStatic({
+//             url: my_str,
+//             imageExtent: img_ext // east, north, west, south
+//         }),
+//         zIndex: 0
+//     });
+//     map.addLayer(imageLayer);
+//     source.clear();
+// });
+//
+// document.getElementById("imgSearchBtn2").addEventListener('click', function () {
+//     let startDate = document.getElementById("finishDatepicker").value
+//
+//     if (startDate.length === 0) {
+//         startDate = "2020" + "-" + "06" + "-" + "02"
+//     } else {
+//         startDate = startDate.split('/')
+//         startDate = startDate[2] + "-" + startDate[0] + "-" + startDate[1]
+//     }
+//
+//     const date = new Date(startDate);
+//     date.setDate(date.getDate() - 15);
+//     console.log(date)
+//
+//     const year = date.getFullYear();
+//     let month = date.getMonth() + 1;
+//     let day = date.getDate();
+//
+//     if (month < 10) {
+//         month = "0" + month.toString();
+//     }
+//     if (day < 10) {
+//         day = "0" + day.toString();
+//     }
+//
+//     const startDate0 = [year, month, day].join('-')
+//
+//     // let finishDate = document.getElementById("finishDatepicker").value.split('/')
+//     // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
+//
+//     var lst = [];
+//     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
+//         if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
+//             lst.push(map.getLayers().array_[i])
+//         }
+//     }
+//     map.setLayers(lst)
+//
+//
+//     var features = source.getFeatures();
+//     var wktRepresenation;
+//     var Bound;
+//     console.log(features);
+//     if (features.length === 0) {
+//         if (zoneOfInterest.length === 0) {
+//             console.log("no shapes");
+//         } else {
+//             wktRepresenation = varwkt;
+//             Bound = varbound;
+//         }
+//     } else {
+//         var format = new WKT();
+//         var geom = [];
+//         if (features.length === 1) {
+//             wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+//             Bound = features[0].getGeometry().getExtent();
+//             console.log(Bound)
+//
+//             zoneOfInterest = features;
+//             console.log(zoneOfInterest)
+//
+//             varwkt = wktRepresenation;
+//             varbound = Bound;
+//         } else {
+//             // TODO: сделать не только для двух полигонов
+//             var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+//             wktRepresenation = format.writeGeometry(olGeom._geomFact);
+//             Bound = olGeom._geomFact.getExtent();
+//         }
+//     }
+//
+//     // TODO
+//     // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+//     //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+//     my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_1}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=VV&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+//     localStorage.setItem('url2', my_str)
+//     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
+//     var imageLayer = new ImageLayer({
+//         source: new ImageStatic({
+//             url: my_str,
+//             imageExtent: img_ext // east, north, west, south
+//         }),
+//         zIndex: 0
+//     });
+//     map.addLayer(imageLayer);
+//     source.clear();
+// });
 
 const modifyStyle = new Style({
     image: new CircleStyle({
@@ -810,9 +810,9 @@ const interval = setInterval(function () {
 
 }, 5000);
 
-document.getElementById("StepaBtn").addEventListener('click', function () {
-    sendOrder()
-});
+// document.getElementById("StepaBtn").addEventListener('click', function () {
+//     sendOrder()
+// });
 
 
 document.getElementById("deleteAccount").addEventListener('click', async function () {
@@ -1069,7 +1069,7 @@ Vue.component('order-card-row', {
     template:
         '<div v-if="order[0] == 1" class="customCard"><p>Создание заказа</p>' +
         '<div style="all:initial;">' +
-            '<div style="margin-left: 12%;"><button @click="show1()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_1==true">-</p><p v-if="show_1==false">+</p></button> <i @click="show1()" style="cursor: pointer;">Добавить разметку</i></div>' +
+            '<div style="margin-left: 12%; margin-bottom: 3px;"><button @click="show1()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_1==true">-</p><p v-if="show_1==false">+</p></button> <i @click="show1()" style="cursor: pointer;">Добавить разметку</i></div>' +
                 '<div v-if="show_1 == true">' +
                     '<label class="input-group-text" for="shapeType">Geometry type:</label>\n' +
                     '              <select @change="selectArea()" class="form-select" id="shapeType">\n' +
@@ -1078,7 +1078,7 @@ Vue.component('order-card-row', {
                     '                  <option value="Box">Box</option>\n' +
                     '              </select>' +
                 '</div>' +
-            '<div style="margin-left: 12%;"><button @click="show2()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_2==true">-</p><p v-if="show_2==false">+</p></button> <i @click="show2()" style="cursor: pointer;">Добавить параметры</i></div>' +
+            '<div style="margin-left: 12%; margin-bottom: 3px;"><button @click="show2()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_2==true">-</p><p v-if="show_2==false">+</p></button> <i @click="show2()" style="cursor: pointer;">Добавить параметры</i></div>' +
                 '<div v-if="show_2 == true">' +
                     '<div style="align-items: center; text-align: center;">' +
         '               <label class="input-group-text" for="modelType">Модель:</label>\n' +
@@ -1093,7 +1093,7 @@ Vue.component('order-card-row', {
         '               </select>' +
         '           </div>' +
                 '</div>' +
-            '<div style="margin-left: 12%;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i @click="show3()" style="cursor: pointer;">Добавить даты съемки</i></div>' +
+            '<div style="margin-left: 12%; margin-bottom: 3px;"><button @click="show3()" type="button" class="btn btn-primary btn-circle btn-sm"><p v-if="show_3==true">-</p><p v-if="show_3==false">+</p></button> <i @click="show3()" style="cursor: pointer;">Добавить даты съемки</i></div>' +
                 '<div v-if="show_3 == true"> ' +
         '           <div style="align-items: center; text-align: center;">' +
                         '<p>Start date: <input @change="pickedDate1()" type="date" id="startDatepicker"></p>\n' +
@@ -1108,9 +1108,19 @@ Vue.component('order-card-row', {
                 '</div>' +
         '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
         '</div>' +
-        '<div v-if="show_1 == true && show_2 == true"><button @click="sendNewOrder()" class="btn btn-success" style="">Отправить заказ</button></div>' +
-        '<div v-if="!(show_1 == true && show_2 == true)"><button @click="sendNewOrder()" class="btn btn-success" disabled>Отправить заказ</button></div>' +
-        '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div>' +
+        '<table  style="all:initial;">' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>' +
+                        '<div v-if="show_1 == true && show_2 == true"><button @click="sendNewOrder()" class="btn btn-success m-1" style="">Отправить </button></div>' +
+                        '<div v-if="!(show_1 == true && show_2 == true)"><button @click="sendNewOrder()" class="btn btn-success m-1" disabled>Отправить</button></div>' +
+                    '</td>' +
+                    '<td>' +
+                        '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить</button></div>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>' +
         '</div>',
     methods: {
         pickedDate1() {
@@ -1270,15 +1280,33 @@ Vue.component('order-card-row', {
 
 Vue.component('order-row', {
     props: ['order', 'isReady'],
-    template: '<div class="customCard">' +
-        '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
-        '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
-        '<div>Создан: {{new Date(order.createdAt).toLocaleString("ru-RU")}}</div>' +
-        '<div v-if="order.status === true"><div>Завершен: {{new Date(order.finishedAt).toLocaleString("ru-RU")}}</div></div>' +
-        '<div><button v-if="isReady === true" @click="showResult(order.result)">ПОКАЗАТЬ</button></div>' +
-        '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
-        '<div><button v-if="isReady === true" @click="hideImage()">СКРЫТЬ КАРТИНКУ</button></div>' +
-        '<div><button @click="deleteOrder(order)" class="btn btn-danger">Удалить заказ</button></div></div>',
+    template:
+        '<div>' +
+            '<div v-if="order.status === false">' +
+                '<div class="customCard" style="border: 1px solid red;">' +
+                    '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
+                    '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
+                    '<div>Создан: {{new Date(order.createdAt).toLocaleString("ru-RU")}}</div>' +
+                    '<div v-if="order.status === true"><div>Завершен: {{new Date(order.finishedAt).toLocaleString("ru-RU")}}</div></div>' +
+                    '<div><button v-if="isReady === true" @click="showResult(order.result)" class="btn btn-primary m-1">ПОКАЗАТЬ</button></div>' +
+                    '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)" class="btn btn-primary m-1">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
+                    '<div><button v-if="isReady === true" @click="hideImage()" class="btn btn-primary m-1">СКРЫТЬ КАРТИНКУ</button></div>' +
+                    '<div><button @click="deleteOrder(order)" class="btn btn-danger">Удалить заказ</button></div>' +
+                '</div>' +
+            '</div>' +
+            '<div v-if="order.status === true">' +
+                '<div class="customCard" style="border: 1px solid green;">' +
+                    '<div v-if="order.status === true"><div style="color: green">ГОТОВО</div></div>' +
+                    '<div v-if="order.status === false"><div style="color: red">ВЫПОЛНЯЕТСЯ</div></div>' +
+                    '<div>Создан: {{new Date(order.createdAt).toLocaleString("ru-RU")}}</div>' +
+                    '<div v-if="order.status === true"><div>Завершен: {{new Date(order.finishedAt).toLocaleString("ru-RU")}}</div></div>' +
+                    '<div><button v-if="isReady === true" @click="showResult(order.result)" class="btn btn-primary m-1">ПОКАЗАТЬ</button></div>' +
+                    '<div><button v-if="isReady === true" @click="showImage(order.url, order.bbox)" class="btn btn-primary m-1">ПОКАЗАТЬ КАРТИНКУ</button></div>' +
+                    '<div><button v-if="isReady === true" @click="hideImage()" class="btn btn-primary m-1">СКРЫТЬ КАРТИНКУ</button></div>' +
+                    '<div><button @click="deleteOrder(order)" class="btn btn-danger">Удалить заказ</button></div>' +
+                '</div>' +
+            '</div>' +
+        '</div>',
     methods: {
         deleteOrder(order) {
             const url_ = 'http://localhost:8000/orders?order_id=' + order.id

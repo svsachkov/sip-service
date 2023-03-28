@@ -17,7 +17,7 @@
         }
 
         .sidebar {
-            height: 85vh;
+            height: 82vh;
             float: right;
             width: 20vw;
         }
@@ -27,7 +27,8 @@
         }
 
         .customCard {
-            border: 1px solid black;
+            border: 1px solid grey;
+            border-radius: 10px;
             margin: 10px auto;
             padding: 10px 3px;
             width: 90%;
@@ -232,7 +233,7 @@
     <div id="wrapper">
         <div style="position: absolute;z-index: 2">
             <button class="btn bg-transparent" type="button" id="to_acc_page"
-                    style="margin: 10px; border: 2px black dashed;"><span>Аккаунт</span></button>
+                    style="margin: 10px 50px; border: 2px black dashed;"><span>Аккаунт</span></button>
             <!--        <span id="app"></span>-->
             <div id="controls">
                 <div id="info"></div>
@@ -260,13 +261,13 @@
                 </div>
             </div>
 
-            <div class="orders_list" id="orders_list">
-<!--                <p>Start date: <input type="text" id="startDatepicker"></p>-->
-<!--                <p>Finish date: <input type="text" id="finishDatepicker"></p>-->
-                <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>
-                <button class="searchBtn2" type="button" id="imgSearchBtn2"><span>GET IMAGE 2</span></button>
-                <button class="StepaBtn" type="button" id="StepaBtn"><span>CREATE ORDER</span></button>
-            </div>
+<!--            <div class="orders_list" id="orders_list">-->
+<!--&lt;!&ndash;                <p>Start date: <input type="text" id="startDatepicker"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                <p>Finish date: <input type="text" id="finishDatepicker"></p>&ndash;&gt;-->
+<!--                <button class="searchBtn" type="button" id="imgSearchBtn"><span>GET IMAGE</span></button>-->
+<!--                <button class="searchBtn2" type="button" id="imgSearchBtn2"><span>GET IMAGE 2</span></button>-->
+<!--                <button class="StepaBtn" type="button" id="StepaBtn"><span>CREATE ORDER</span></button>-->
+<!--            </div>-->
             <div id="overlay" class="overlay">
                 <div>EPGS:4326
                     <div id="mouse-position"></div>
@@ -312,9 +313,9 @@
         </div>
         <hr/>
     </div>
-    <div style="float: right; text-align: center; width: 20vw;">
-        <hr/>
-        <button id="createNewOrder" style="margin-top: -10px; left: 50%;" class="btn btn-primary btn-rounded">Создать заказ</button>
+    <div style="float: right; text-align: center; width: 20vw; height: 8vh;">
+        <hr style=""/>
+        <button id="createNewOrder" style="left: 50%; width: 100%; height: 100%" class="btn btn-primary">Создать заказ</button>
     </div>
 </div>
 
