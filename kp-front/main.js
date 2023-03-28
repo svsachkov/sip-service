@@ -320,8 +320,7 @@ document.getElementById("clearBtnL").addEventListener('click', function () {
     }
 });
 let my_str;
-const sent_2 = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
-const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
+
 
 document.getElementById("imgSearchBtn").addEventListener('click', function () {
     let startDate = document.getElementById("startDatepicker").value
@@ -869,7 +868,7 @@ function getOrders(cOrders, fOrders) {
     })
 }
 
-function sendOrder() {
+function sendOrder(m, s) {
     const url = localStorage.getItem("url")
     const url2 = localStorage.getItem("url2")
     const token = localStorage.getItem("Token")
@@ -879,11 +878,11 @@ function sendOrder() {
         method: "POST",
         headers: {"Accept": 'application/json', "Content-type": 'application/json', "Authorization": token},
         body: JSON.stringify({
-            "url": url,
-            "url2": url2,
+            "url": url === "null" ? null : url,
+            "url2": url2 === "null" ? null : url2,
             "name": "Order" + Math.random(),
-            "model": "water",
-            "satellite": "sent-2"
+            "model": m,
+            "satellite": s
         })
     }).then(response => response.json()).then(
         function (response) {
@@ -895,7 +894,7 @@ function sendOrder() {
     localStorage.setItem("url2", null)
 }
 
-function getFirstImage(startDate) {
+function createStartDate0(startDate) {
     if (startDate.length === 0) {
         startDate = "2020" + "-" + "06" + "-" + "02"
     }
@@ -915,11 +914,39 @@ function getFirstImage(startDate) {
         day = "0" + day.toString();
     }
 
-    const startDate0 = [year, month, day].join('-')
-
+    return [year, month, day].join('-')
+}
+function setUrl(startDate, url, wktRepresenation, sat) {
+    const startDate0 = createStartDate0(startDate)
     // let finishDate = document.getElementById("finishDatepicker").value.split('/')
     // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
 
+    let sent = ""
+    let layer = ""
+    if (sat === 'sent-1') {
+        sent = '2cea12cc-7019-40a1-aa32-5948e8629ba9'
+        layer = 'VV'
+    } else if (sat === 'sent-2') {
+        sent = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce'
+        layer = 'NATURAL-COLOR'
+    }
+    // const sent_1 = '2cea12cc-7019-40a1-aa32-5948e8629ba9';
+    // const sent_2 = 'cbe156b7-660c-4640-a5a1-ea774aecf9ce';
+
+    // const layer_1 = 'VV'
+    // const layer_2 = 'NATURAL-COLOR'
+
+
+    console.log("SET_URL:", startDate0, startDate, url, wktRepresenation)
+    // TODO
+    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
+    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=${layer}&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
+    console.log(my_str)
+    localStorage.setItem(url, my_str)
+}
+
+function getFirstImage(startDate, sat) {
     var lst = [];
     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
         if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
@@ -938,7 +965,6 @@ function getFirstImage(startDate) {
         } else {
             wktRepresenation = varwkt;
             Bound = varbound;
-
         }
     } else {
         var format = new WKT();
@@ -960,13 +986,7 @@ function getFirstImage(startDate) {
             Bound = olGeom._geomFact.getExtent();
         }
     }
-
-    // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    console.log(my_str)
-    localStorage.setItem('url', my_str)
+    setUrl(startDate, 'url', wktRepresenation, sat)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
         source: new ImageStatic({
@@ -979,44 +999,19 @@ function getFirstImage(startDate) {
     source.clear();
 }
 
-function getSecondImage(startDate) {
-    if (startDate.length === 0) {
-        startDate = "2020" + "-" + "06" + "-" + "02"
-    }
-
-    const date = new Date(startDate);
-    date.setDate(date.getDate() - 15);
-    console.log(date)
-
-    const year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    if (month < 10) {
-        month = "0" + month.toString();
-    }
-    if (day < 10) {
-        day = "0" + day.toString();
-    }
-
-    const startDate0 = [year, month, day].join('-')
-
-    // let finishDate = document.getElementById("finishDatepicker").value.split('/')
-    // finishDate = finishDate[2] + "-" + finishDate[0] + "-" + finishDate[1]
-
+function getSecondImage(startDate, sat) {
     var lst = [];
     for (let i = 0, ii = map.getLayers().array_.length; i < ii; ++i) {
         if (map.getLayers().array_[i].values_['zIndex'] !== 0) {
             lst.push(map.getLayers().array_[i])
         }
     }
-    map.setLayers(lst)
 
+    map.setLayers(lst)
 
     var features = source.getFeatures();
     var wktRepresenation;
     var Bound;
-    console.log(features);
     if (features.length === 0) {
         if (zoneOfInterest.length === 0) {
             console.log("no shapes");
@@ -1044,12 +1039,7 @@ function getSecondImage(startDate) {
             Bound = olGeom._geomFact.getExtent();
         }
     }
-
-    // TODO
-    // const my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=2018-03-29/2018-05-29&GEOMETRY=${wktRepresenation}`
-    //my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    my_str = `http://services.sentinel-hub.com/ogc/wms/${sent_2}?SERVICE=WMS&REQUEST=GetMap&CRS=${projection.value}&SHOWLOGO=false&VERSION=1.3.0&LAYERS=NATURAL-COLOR&MAXCC=1&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&FORMAT=image/jpeg&TIME=${startDate0}/${startDate}&GEOMETRY=${wktRepresenation}`
-    localStorage.setItem('url2', my_str)
+    setUrl(startDate, 'url2', wktRepresenation, sat)
     var img_ext = olProj.transformExtent(Bound, projection.value, projection.value) // EPSG:4326 3857
     var imageLayer = new ImageLayer({
         source: new ImageStatic({
@@ -1098,8 +1088,8 @@ Vue.component('order-card-row', {
         '               </select>' +
         '               <label class="input-group-text" for="satType">Спутник:</label>\n' +
         '               <select @change="selectSat()" class="form-select" id="satType">\n' +
-        '                   <option value="sent-1">Sentinel-1</option>\n' +
-        '                   <option v-if="iceSelected" value="sent-2">Sentinel-2</option>\n' +
+        '                   <option value="sent-2">Sentinel-2</option>\n' +
+        '                   <option v-if="iceSelected" value="sent-1">Sentinel-1</option>\n' +
         '               </select>' +
         '           </div>' +
                 '</div>' +
@@ -1118,8 +1108,8 @@ Vue.component('order-card-row', {
                 '</div>' +
         '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
         '</div>' +
-        '<div v-if="show_1 == true && show_2 == true && show_3 == true"><button @click="sendNewOrder()" class="btn btn-success" style="">Отправить заказ</button></div>' +
-        '<div v-if="!(show_1 == true && show_2 == true && show_3 == true)"><button @click="sendNewOrder()" class="btn btn-success" disabled>Отправить заказ</button></div>' +
+        '<div v-if="show_1 == true && show_2 == true"><button @click="sendNewOrder()" class="btn btn-success" style="">Отправить заказ</button></div>' +
+        '<div v-if="!(show_1 == true && show_2 == true)"><button @click="sendNewOrder()" class="btn btn-success" disabled>Отправить заказ</button></div>' +
         '<div><button @click="deleteEmptyOrder()" class="btn btn-danger">Удалить заказ</button></div>' +
         '</div>',
     methods: {
@@ -1153,34 +1143,86 @@ Vue.component('order-card-row', {
 
         },
         sendNewOrder() {
+            let date1 = ""
+            let date2 = ""
             if (document.getElementById("startDatepicker") != null) {
-                getFirstImage(document.getElementById("startDatepicker").value)
+                date1 = document.getElementById("startDatepicker").value
             }
             if (document.getElementById("finishDatepicker") != null) {
-                getSecondImage(document.getElementById("finishDatepicker").value)
+                date2 = document.getElementById("finishDatepicker").value
             }
-            // sendOrder()
+            const model = document.getElementById("modelType").value
+            const sat = document.getElementById("satType").value
+
+            var features = source.getFeatures();
+            var wktRepresenation;
+            var Bound;
+            if (features.length === 0) {
+                if (zoneOfInterest.length === 0) {
+                    console.log("no shapes");
+                } else {
+                    wktRepresenation = varwkt;
+                    Bound = varbound;
+
+                }
+            } else {
+                var format = new WKT();
+                var geom = [];
+                if (features.length === 1) {
+                    wktRepresenation = format.writeGeometry(features[0].getGeometry().clone().transform(projection.value, 'EPSG:3857'));
+                    Bound = features[0].getGeometry().getExtent();
+                    console.log(Bound)
+
+                    zoneOfInterest = features;
+                    console.log(zoneOfInterest)
+
+                    varwkt = wktRepresenation;
+                    varbound = Bound;
+                } else {
+                    // TODO: сделать не только для двух полигонов
+                    var olGeom = new UnaryUnionOp(features[0].getGeometry(), features[1].getGeometry());
+                    wktRepresenation = format.writeGeometry(olGeom._geomFact);
+                    Bound = olGeom._geomFact.getExtent();
+                }
+            }
+
+            if (date1 === "" && date2 === "") {
+                setUrl("", 'url', wktRepresenation, sat)
+                localStorage.setItem("url2", null)
+            } else if ((date1 !== "" && date2 === "") || (date1 === "" && date2 !== "")) {
+                setUrl(date1 === "" ? date2 : date1, 'url', wktRepresenation, sat)
+                localStorage.setItem("url2", null)
+            } else {
+                setUrl(date1, 'url', wktRepresenation, sat)
+                setUrl(date2, 'url2', wktRepresenation, sat)
+            }
+
+            sendOrder(model, sat)
+            this.deleteEmptyOrder()
         },
         showFirstDate() {
-            getFirstImage(document.getElementById("startDatepicker").value)
+            const sat = document.getElementById("satType").value
+            getFirstImage(document.getElementById("startDatepicker").value, sat)
         },
         showSecondDate() {
-            getSecondImage(document.getElementById("finishDatepicker").value)
+            const sat = document.getElementById("satType").value
+            getSecondImage(document.getElementById("finishDatepicker").value, sat)
         },
         showImages() {
+            const sat = document.getElementById("satType").value
             if (this.show_3 === false) {
-                getFirstImage("")
+                getFirstImage("", sat)
             } else {
                 const date1 = document.getElementById("startDatepicker").value
                 const date2 = document.getElementById("finishDatepicker").value
                 if (date1.length > 0 && date2.length > 0) {
 
                 } else if (date1.length > 0) {
-                    getFirstImage(document.getElementById("startDatepicker").value)
+                    getFirstImage(document.getElementById("startDatepicker").value, sat)
                 } else if (date2.length > 0) {
-                    getSecondImage(document.getElementById("finishDatepicker").value)
+                    getSecondImage(document.getElementById("finishDatepicker").value, sat)
                 } else {
-                    getFirstImage("")
+                    getFirstImage("", sat)
                 }
             }
         },
