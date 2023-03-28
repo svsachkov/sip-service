@@ -1108,7 +1108,7 @@ Vue.component('order-card-row', {
                 '</div>' +
         '<button id="showImagesButton" @click="showImages()" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 10px;">Посмотреть</button>' +
         '</div>' +
-        '<table  style="all:initial;">' +
+        '<table style="margin-left: 10%">' +
             '<tbody>' +
                 '<tr>' +
                     '<td>' +
@@ -1147,6 +1147,8 @@ Vue.component('order-card-row', {
         selectModel() {
             if (document.getElementById("modelType").value === "ice") {
                 this.iceSelected = true
+            } else {
+                this.iceSelected = false
             }
         },
         selectSat() {
