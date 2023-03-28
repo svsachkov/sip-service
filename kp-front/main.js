@@ -239,7 +239,6 @@ function update() { // TODO 24.03
         map.getView().fit(lst[i].getExtent());
     }
     map.addLayer(vector);
-    map.addLayer(remember[0]);
 
     if (remember.length !== 0) {
         map.addLayer(remember[0]);
