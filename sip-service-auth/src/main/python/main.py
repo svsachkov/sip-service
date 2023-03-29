@@ -1,7 +1,4 @@
 import sys
-import datetime
-
-from shapely import symmetric_difference
 
 from helpers import *
 
@@ -68,9 +65,9 @@ elif model_name == models["ice"]:
 
     img = np.ndarray(shape=(4, *img_vv.shape))
     img[0] = np.array(img_vv.read(1))
-    img[1] = np.array(img_vv.read(1))
-    img[2] = np.array(img_vv.read(1))
-    img[3] = np.array(img_vv.read(1))
+    img[1] = np.array(img_vv20.read(1))
+    img[2] = np.array(img_vh.read(1))
+    img[3] = np.array(img_vh20.read(1))
 
     with rasterio.open(input_img_path, 'w', **img_vv.profile) as src:
         src.write(img)
@@ -91,9 +88,9 @@ elif model_name == models["ice"]:
 
         img = np.ndarray(shape=(4, *img_vv.shape))
         img[0] = np.array(img_vv.read(1))
-        img[1] = np.array(img_vv.read(1))
-        img[2] = np.array(img_vv.read(1))
-        img[3] = np.array(img_vv.read(1))
+        img[1] = np.array(img_vv20.read(1))
+        img[2] = np.array(img_vh.read(1))
+        img[3] = np.array(img_vh20.read(1))
 
         with rasterio.open(input_img_path, 'w', **img_vv.profile) as src:
             src.write(img)
@@ -101,16 +98,17 @@ elif model_name == models["ice"]:
         process_image_ice(model_path, img, output_img_path, img_vv)
         result2, bbox, mp2 = vectorize(url2, output_img_path)
 
-# ----------------------------------------------------DATABASE----------------------------------------------------
+elif model_name == models["ice2"]:
+    pred_mask = run_ice2(root_path + "models/saved_model/ice", root_path + "images/inputs/P6-2018061017.jpg")
 
 diff = None
 if result2 is not None:
     try:
-        diff = symmetric_difference(mp1, mp2)
-        gpd.GeoSeries(diff).simplify(tolerance=500).to_file(f"diff.json", driver='GeoJSON', show_bbox=False)
-        diff = gpd.GeoSeries(diff).to_json()
-    except:
+        diff = get_symmetric_difference(mp1, mp2)
+    except ():
         pass
+
+# ----------------------------------------------------DATABASE----------------------------------------------------
 
 # Update the finished order in the database:
 db = {
@@ -127,7 +125,6 @@ order = {
     "bbox": bbox,
     "result": result,
     "result2": result2,
-    "finished_at": datetime.datetime.now(),
     "order_id": order_id,
     "diff": diff,
 }

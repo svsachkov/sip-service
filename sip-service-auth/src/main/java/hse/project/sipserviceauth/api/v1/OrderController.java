@@ -12,14 +12,13 @@ import hse.project.sipserviceauth.utils.AuthorizedUser;
 
 import lombok.RequiredArgsConstructor;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping()
@@ -101,6 +100,8 @@ public class OrderController implements CrudController<OrderRequest> {
                 notReadyOrders.add(order);
             }
         }
+
+        readyOrders.sort(Comparator.comparing(Order::getCreatedAt));
 
         return new ResponseEntity<>(new ArrayList<>(List.of(notReadyOrders, readyOrders)), HttpStatus.OK);
     }

@@ -1,6 +1,7 @@
 import os
 import torch
 import shapely
+import datetime
 import rasterio
 import requests
 import psycopg2
@@ -14,10 +15,16 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 import torchvision
 
-from shapely import wkt
 from rasterio.features import shapes
+from shapely import wkt, symmetric_difference
 from torch.utils.data import DataLoader, Dataset
 from segmentation_models_pytorch.losses import DiceLoss
+
+# For ice_sent-2:
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+from tensorflow.keras.optimizers import legacy
 
 
 # -------------------HELPERS-HELPERS-HELPERS-HELPERS-HELPERS-HELPERS-HELPERS-HELPERS-HELPERS-HELPERS------------------
@@ -183,7 +190,7 @@ def save_order_result_to_database(db, order):
             order["status"],
             order["url"],
             order["url2"],
-            order["finished_at"],
+            datetime.datetime.now(),
             order["result"],
             order["result2"],
             order["bbox"],
@@ -227,7 +234,9 @@ class SegmentationModel(nn.Module):
         return logits
 
 
-# -----------------------------------------------------------------------------------------------------------------
+# -----------------------ICE_SENT1--ICE_SENT1--ICE_SENT1--ICE_SENT1--ICE_SENT1--ICE_SENT1--------------------------
+
+global profile
 
 
 def save_t(full_name, im, prof):
@@ -304,3 +313,118 @@ class InferDataset(Dataset):
         f_name = self.data_list[index]
         image = item_getter(self.path, f_name, val=False)
         return image
+
+
+# -----------------------DIFFERENCE-DIFFERENCE-DIFFERENCE-DIFFERENCE-DIFFERENCE-DIFFERENCE--------------------------
+
+def get_symmetric_difference(mp1, mp2):
+    diff = symmetric_difference(mp1, mp2)
+    gpd.GeoSeries(diff).simplify(tolerance=500).to_file(f"diff.json", driver='GeoJSON', show_bbox=False)
+    return gpd.GeoSeries(diff).to_json()
+
+
+# -----------------------ICE_SENT2--ICE_SENT2--ICE_SENT2--ICE_SENT2--ICE_SENT2--ICE_SENT2--------------------------
+
+# profile = None
+
+
+def read_image(img_path):
+    # image = tf.io.read_file(img_path)
+    # image = tf.image.decode_jpeg(image, channels=3)
+    image = rasterio.open("images/inputs/a.tiff", 'r').read()
+    image = tf.convert_to_tensor(image[:3].transpose((1, 2, 0)), np.float32)
+    image = tf.image.resize(image, (256, 256))
+    image = tf.cast(image, tf.float32) / 255.0
+
+    return image
+
+
+def display(display_list, n_colors):
+    ice_colors = n_colors - 1
+    new_colors = plt.get_cmap('jet', ice_colors)(np.linspace(0, 1, ice_colors))
+    black = np.array([[0, 0, 0, 1]])
+    # white = np.array([[1, 1, 1, 1]])
+    new_colors = np.concatenate((new_colors, black), axis=0)  # land will be black
+    cmap = ListedColormap(new_colors)
+
+    fig, axs = plt.subplots(nrows=1, ncols=len(display_list), figsize=(15, 6))
+
+    title = ['Input Image', 'Predicted Mask']
+
+    pred_mask = None
+    for i in range(len(display_list)):
+        axs[i].set_title(title[i])
+        if i == 0:
+            axs[i].imshow(tf.keras.utils.array_to_img(display_list[i]))
+        else:
+            pred_mask = display_list[i]
+            pred_mask_numpy = pred_mask.numpy()
+
+            pred_mask_numpy[pred_mask_numpy > 6] = 0
+            pred_mask_numpy[pred_mask_numpy < 4] = 0
+            pred_mask_numpy[pred_mask_numpy != 0] = 1
+            pred_to_pil = pred_mask_numpy.astype(np.uint8)
+            im = PIL.Image.new(mode='1', size=pred_to_pil.shape[:2])
+            im.putdata(pred_to_pil[:, :, 0].flatten())
+            im.show()
+
+            global profile
+
+            profile["count"] = 1
+            with rasterio.open("result.tiff", 'w', **profile) as src:
+                src.write(np.array(im), 1)
+
+            msk = axs[i].imshow(display_list[i], cmap=cmap, vmin=0, vmax=n_colors - 1)
+        axs[i].axis('off')
+
+    cbar = fig.colorbar(msk, ax=axs, location='right')
+    tick_locs = (np.arange(n_colors) + 0.5) * (n_colors - 1) / n_colors
+    cbar.set_ticks(tick_locs)
+    cbar.set_ticklabels(np.arange(n_colors))
+    plt.savefig('ice2_result.png')
+    plt.show()
+
+    return pred_mask
+
+
+def create_mask(pred_mask, ele=0):
+    pred_mask = tf.argmax(pred_mask, axis=-1)  # use the highest proabbaility class as the prediction
+    pred_mask = pred_mask[..., tf.newaxis]
+    return pred_mask[ele]
+
+
+def show_predictions(model, dataset, num=1, ele=0, n_colors=8):
+    global profile
+    for image in dataset.take(num):
+        profile = image.profile
+        p = model.predict(image)
+        a = create_mask(p, ele)
+        display([image[ele], a], n_colors=8)
+
+
+class UpdatedMeanIoU(tf.keras.metrics.MeanIoU):
+    def __init__(self,
+                 y_true=None,
+                 y_pred=None,
+                 num_classes=None,
+                 name=None,
+                 dtype=None):
+        super(UpdatedMeanIoU, self).__init__(num_classes=num_classes, name=name, dtype=dtype)
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        y_pred = tf.math.argmax(y_pred, axis=-1)
+        return super().update_state(y_true, y_pred, sample_weight)
+
+
+def run_ice2(model_path, img_path, n_colors=8):
+    model = tf.keras.models.load_model(model_path, compile=False)
+    model.compile(
+        optimizer=legacy.Adam(),
+        loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+        metrics=['sparse_categorical_accuracy', UpdatedMeanIoU(num_classes=n_colors)]
+    )
+
+    val_dataset = tf.data.Dataset.from_tensor_slices(([img_path])).map(read_image).batch(1)
+    return show_predictions(model, val_dataset, num=10, ele=0, n_colors=n_colors)
+
+# run_ice2("models/saved_model/ice", "images/inputs/a.tiff")
